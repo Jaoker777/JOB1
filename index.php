@@ -131,7 +131,7 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
                     <?php foreach ($categories as $cat): ?>
                         <a href="index.php?category=<?= $cat['id'] ?><?= $searchQuery ? '&search=' . urlencode($searchQuery) : '' ?>"
                            class="chip <?= $selectedCategory === $cat['id'] ? 'chip-active' : '' ?>">
-                            <?= htmlspecialchars($cat['name']) ?>
+                            <?= $cat['icon'] ?? '📦' ?> <?= htmlspecialchars($cat['name']) ?>
                         </a>
                     <?php endforeach; ?>
                 </div>
