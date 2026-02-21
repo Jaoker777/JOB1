@@ -71,9 +71,9 @@ INSERT INTO categories (name) VALUES
 
 -- Seed sample products
 INSERT INTO products (category_id, name, description, price, stock_quantity, image_url) VALUES
-(1, 'NVIDIA RTX 4070 Ti', 'High-performance GPU for gaming and content creation. 12GB GDDR6X.', 22900.00, 8, NULL),
-(2, 'AMD Ryzen 7 7800X3D', '8-core gaming processor with 3D V-Cache technology.', 13500.00, 12, NULL),
-(3, 'Corsair Vengeance DDR5 32GB', 'DDR5-5600 dual-channel RAM kit. CL36 latency.', 4290.00, 20, NULL),
-(4, 'Samsung 990 Pro 2TB NVMe', 'PCIe 4.0 NVMe SSD with 7450 MB/s read speed.', 6490.00, 15, NULL),
-(5, 'LG 27GP850-B 27" QHD', '165Hz Nano IPS gaming monitor. 1ms GTG response.', 12900.00, 3, NULL),
-(6, 'Logitech G Pro X Superlight', 'Ultra-lightweight wireless gaming mouse. 25K DPI sensor.', 3990.00, 25, NULL);
+(1, 'NVIDIA RTX 4070 Ti', 'High-performance GPU for gaming and content creation. 12GB GDDR6X.', 22900.00, 8, 'assets/images/products/gpu.png'),
+(2, 'AMD Ryzen 7 7800X3D', '8-core gaming processor with 3D V-Cache technology.', 13500.00, 12, 'assets/images/products/cpu.png'),
+(3, 'Corsair Vengeance DDR5 32GB', 'DDR5-5600 dual-channel RAM kit. CL36 latency.', 4290.00, 20, 'assets/images/products/ram.png'),
+(4, 'Samsung 990 Pro 2TB NVMe', 'PCIe 4.0 NVMe SSD with 7450 MB/s read speed.', 6490.00, 15, 'assets/images/products/ssd.png'),
+(5, 'LG 27GP850-B 27" QHD', '165Hz Nano IPS gaming monitor. 1ms GTG response.', 12900.00, 3, 'assets/images/products/monitor.png'),
+(6, 'Logitech G Pro X Superlight', 'Ultra-lightweight wireless gaming mouse. 25K DPI sensor.', 3990.00, 25, 'assets/images/products/mouse.png');
