@@ -1,11 +1,15 @@
 <?php
-require_once 'db.php';
+require_once 'auth.php';
+require_auth();
+
+$user = current_user();
+$isAdmin = is_admin();
 
 $message = '';
 $messageType = '';
 
-// --- Handle DELETE ---
-if (isset($_GET['delete'])) {
+// --- Handle DELETE (Admin only) ---
+if (isset($_GET['delete']) && $isAdmin) {
     $id = (int) $_GET['delete'];
     $stmt = $pdo->prepare("DELETE FROM products WHERE id = ?");
     $stmt->execute([$id]);
@@ -13,8 +17,8 @@ if (isset($_GET['delete'])) {
     exit;
 }
 
-// --- Handle ADD ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
+// --- Handle ADD (Admin only) ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add' && $isAdmin) {
     $name = trim($_POST['name'] ?? '');
     $category_id = (int) ($_POST['category_id'] ?? 0);
     $price = (float) ($_POST['price'] ?? 0);
@@ -32,8 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
-// --- Handle EDIT ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'edit') {
+// --- Handle EDIT (Admin only) ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'edit' && $isAdmin) {
     $id = (int) ($_POST['id'] ?? 0);
     $name = trim($_POST['name'] ?? '');
     $category_id = (int) ($_POST['category_id'] ?? 0);
@@ -77,9 +81,9 @@ $products = $pdo->query("
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products — Gaming Store</title>
+    <title>Products — Nournia Shop</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <meta name="description" content="Manage gaming store products — add, edit, delete inventory items.">
+    <meta name="description" content="Manage gaming gear products — add, edit, delete inventory items.">
 </head>
 <body>
     <!-- Sidebar -->
@@ -87,8 +91,8 @@ $products = $pdo->query("
         <div class="sidebar-brand">
             <div class="brand-icon">🎮</div>
             <div>
-                <h1>Gaming Store</h1>
-                <div class="brand-sub">Inventory System</div>
+                <h1>Nournia Shop</h1>
+                <div class="brand-sub">Gaming Gear Store</div>
             </div>
         </div>
         <nav class="sidebar-nav">
@@ -103,8 +107,16 @@ $products = $pdo->query("
                 <span class="nav-icon">💰</span> Sales
             </a>
         </nav>
+        <div class="sidebar-user">
+            <div class="user-avatar"><?= strtoupper(substr($user['username'], 0, 1)) ?></div>
+            <div class="user-info">
+                <div class="user-name"><?= htmlspecialchars($user['username']) ?></div>
+                <div class="user-role"><?= $user['role'] === 'admin' ? '🛠 Admin' : '👤 User' ?></div>
+            </div>
+            <a href="logout.php" class="btn-logout" title="ออกจากระบบ">🚪</a>
+        </div>
         <div class="sidebar-footer">
-            Gaming Store &copy; <?= date('Y') ?>
+            Nournia Shop &copy; <?= date('Y') ?>
         </div>
     </aside>
 
@@ -112,7 +124,7 @@ $products = $pdo->query("
     <main class="main-content">
         <div class="page-header">
             <h2>📦 Products</h2>
-            <p>จัดการสินค้าในระบบ — เพิ่ม, แก้ไข, ลบ</p>
+            <p>จัดการสินค้าในระบบ<?= $isAdmin ? ' — เพิ่ม, แก้ไข, ลบ' : '' ?></p>
         </div>
 
         <div class="page-body">
@@ -127,7 +139,9 @@ $products = $pdo->query("
             <div class="table-container">
                 <div class="table-header">
                     <h3>📋 รายการสินค้าทั้งหมด (<?= count($products) ?>)</h3>
-                    <button class="btn btn-primary" onclick="openModal('addModal')">+ เพิ่มสินค้า</button>
+                    <?php if ($isAdmin): ?>
+                        <button class="btn btn-primary" onclick="openModal('addModal')">+ เพิ่มสินค้า</button>
+                    <?php endif; ?>
                 </div>
                 <table>
                     <thead>
@@ -137,14 +151,14 @@ $products = $pdo->query("
                             <th>หมวดหมู่</th>
                             <th>ราคา</th>
                             <th>Stock</th>
-                            <th>จัดการ</th>
+                            <?php if ($isAdmin): ?><th>จัดการ</th><?php endif; ?>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($products)): ?>
                             <tr>
-                                <td colspan="6" class="table-empty">
-                                    ยังไม่มีสินค้า — กดปุ่ม "เพิ่มสินค้า" เพื่อเริ่มต้น
+                                <td colspan="<?= $isAdmin ? 6 : 5 ?>" class="table-empty">
+                                    ยังไม่มีสินค้า<?= $isAdmin ? ' — กดปุ่ม "เพิ่มสินค้า" เพื่อเริ่มต้น' : '' ?>
                                 </td>
                             </tr>
                         <?php else: ?>
@@ -161,12 +175,14 @@ $products = $pdo->query("
                                             <span class="badge badge-success"><?= $p['stock_quantity'] ?></span>
                                         <?php endif; ?>
                                     </td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <button class="btn btn-ghost btn-sm" onclick="openEditModal(<?= htmlspecialchars(json_encode($p)) ?>)">✏️ แก้ไข</button>
-                                            <a href="products.php?delete=<?= $p['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('ต้องการลบสินค้านี้หรือไม่?')">🗑️ ลบ</a>
-                                        </div>
-                                    </td>
+                                    <?php if ($isAdmin): ?>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button class="btn btn-ghost btn-sm" onclick="openEditModal(<?= htmlspecialchars(json_encode($p)) ?>)">✏️ แก้ไข</button>
+                                                <a href="products.php?delete=<?= $p['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('ต้องการลบสินค้านี้หรือไม่?')">🗑️ ลบ</a>
+                                            </div>
+                                        </td>
+                                    <?php endif; ?>
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -176,6 +192,7 @@ $products = $pdo->query("
         </div>
     </main>
 
+    <?php if ($isAdmin): ?>
     <!-- Add Product Modal -->
     <div class="modal-overlay" id="addModal">
         <div class="modal">
@@ -268,6 +285,7 @@ $products = $pdo->query("
             </form>
         </div>
     </div>
+    <?php endif; ?>
 
     <script>
         function openModal(id) {
@@ -291,9 +309,7 @@ $products = $pdo->query("
         // Close modal on overlay click
         document.querySelectorAll('.modal-overlay').forEach(overlay => {
             overlay.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('active');
-                }
+                if (e.target === this) this.classList.remove('active');
             });
         });
 

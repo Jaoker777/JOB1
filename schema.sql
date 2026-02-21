@@ -1,8 +1,18 @@
--- Gaming Store Inventory System
+-- Nournia Shop — Gaming Gear Store
 -- Database Schema + Seed Data
 
-CREATE DATABASE IF NOT EXISTS gaming_store;
-USE gaming_store;
+CREATE DATABASE IF NOT EXISTS nournia_shop;
+USE nournia_shop;
+
+-- Users table (Authentication)
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    role ENUM('user', 'admin') NOT NULL DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Categories table
 CREATE TABLE IF NOT EXISTS categories (
@@ -28,8 +38,10 @@ CREATE TABLE IF NOT EXISTS products (
 -- Sales table
 CREATE TABLE IF NOT EXISTS sales (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
     sale_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    total_amount DECIMAL(10, 2) NOT NULL DEFAULT 0.00
+    total_amount DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Sale items table
@@ -42,6 +54,11 @@ CREATE TABLE IF NOT EXISTS sale_items (
     FOREIGN KEY (sale_id) REFERENCES sales(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Seed default users (password = 'password' for both, hashed with bcrypt)
+INSERT INTO users (username, email, password_hash, role) VALUES
+('admin', 'admin@nournia.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin'),
+('user', 'user@nournia.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user');
 
 -- Seed categories
 INSERT INTO categories (name) VALUES

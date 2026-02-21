@@ -1,11 +1,11 @@
 <?php
 /**
- * Database Connection - Gaming Store Inventory System
+ * Database Connection - Nournia Shop
  * Uses PDO with prepared statements for security
  */
 
-$host = 'db';           // Docker service name
-$dbname = 'gaming_store';
+$host = 'db';
+$dbname = 'nournia_shop';
 $username = 'root';
 $password = 'rootpassword';
 $charset = 'utf8mb4';

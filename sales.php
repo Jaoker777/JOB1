@@ -1,5 +1,9 @@
 <?php
-require_once 'db.php';
+require_once 'auth.php';
+require_auth();
+
+$user = current_user();
+$isAdmin = is_admin();
 
 $message = '';
 $messageType = '';
@@ -19,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $totalAmount = 0;
             $validItems = [];
 
-            // Validate all items first
             for ($i = 0; $i < count($productIds); $i++) {
                 $pid = (int) $productIds[$i];
                 $qty = (int) $quantities[$i];
@@ -51,12 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 throw new Exception('ไม่มีรายการสินค้าที่ถูกต้อง');
             }
 
-            // Insert sale
-            $saleStmt = $pdo->prepare("INSERT INTO sales (total_amount) VALUES (?)");
-            $saleStmt->execute([$totalAmount]);
+            // Insert sale with user_id
+            $saleStmt = $pdo->prepare("INSERT INTO sales (user_id, total_amount) VALUES (?, ?)");
+            $saleStmt->execute([$user['id'], $totalAmount]);
             $saleId = $pdo->lastInsertId();
 
-            // Insert sale items + decrement stock
             $itemStmt = $pdo->prepare("INSERT INTO sale_items (sale_id, product_id, quantity, unit_price) VALUES (?, ?, ?, ?)");
             $stockStmt = $pdo->prepare("UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ?");
 
@@ -77,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
-// --- Success message ---
+// Success message
 if (isset($_GET['msg']) && $_GET['msg'] === 'created') {
     $saleId = (int) ($_GET['id'] ?? 0);
     $message = "✅ บันทึกการขาย #$saleId เรียบร้อยแล้ว";
@@ -97,10 +99,12 @@ $products = $pdo->query("
 $sales = $pdo->query("
     SELECT s.id, s.sale_date, s.total_amount,
            GROUP_CONCAT(CONCAT(p.name, ' x', si.quantity) SEPARATOR ', ') AS items_summary,
-           SUM(si.quantity) AS total_items
+           SUM(si.quantity) AS total_items,
+           COALESCE(u.username, '-') AS sold_by
     FROM sales s
     JOIN sale_items si ON s.id = si.sale_id
     JOIN products p ON si.product_id = p.id
+    LEFT JOIN users u ON s.user_id = u.id
     GROUP BY s.id
     ORDER BY s.sale_date DESC
     LIMIT 50
@@ -111,9 +115,9 @@ $sales = $pdo->query("
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales — Gaming Store</title>
+    <title>Sales — Nournia Shop</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <meta name="description" content="Gaming Store sales management — create sales orders and view transaction history.">
+    <meta name="description" content="Nournia Shop sales — create orders and view transaction history.">
 </head>
 <body>
     <!-- Sidebar -->
@@ -121,8 +125,8 @@ $sales = $pdo->query("
         <div class="sidebar-brand">
             <div class="brand-icon">🎮</div>
             <div>
-                <h1>Gaming Store</h1>
-                <div class="brand-sub">Inventory System</div>
+                <h1>Nournia Shop</h1>
+                <div class="brand-sub">Gaming Gear Store</div>
             </div>
         </div>
         <nav class="sidebar-nav">
@@ -137,8 +141,16 @@ $sales = $pdo->query("
                 <span class="nav-icon">💰</span> Sales
             </a>
         </nav>
+        <div class="sidebar-user">
+            <div class="user-avatar"><?= strtoupper(substr($user['username'], 0, 1)) ?></div>
+            <div class="user-info">
+                <div class="user-name"><?= htmlspecialchars($user['username']) ?></div>
+                <div class="user-role"><?= $user['role'] === 'admin' ? '🛠 Admin' : '👤 User' ?></div>
+            </div>
+            <a href="logout.php" class="btn-logout" title="ออกจากระบบ">🚪</a>
+        </div>
         <div class="sidebar-footer">
-            Gaming Store &copy; <?= date('Y') ?>
+            Nournia Shop &copy; <?= date('Y') ?>
         </div>
     </aside>
 
@@ -150,7 +162,6 @@ $sales = $pdo->query("
         </div>
 
         <div class="page-body">
-            <!-- Alert Message -->
             <?php if ($message): ?>
                 <div class="alert alert-<?= $messageType ?>">
                     <?= htmlspecialchars($message) ?>
@@ -218,6 +229,7 @@ $sales = $pdo->query("
                         <tr>
                             <th>รหัส</th>
                             <th>วันที่</th>
+                            <th>ผู้ขาย</th>
                             <th>รายการสินค้า</th>
                             <th>จำนวนชิ้น</th>
                             <th>ยอดรวม</th>
@@ -226,7 +238,7 @@ $sales = $pdo->query("
                     <tbody>
                         <?php if (empty($sales)): ?>
                             <tr>
-                                <td colspan="5" class="table-empty">
+                                <td colspan="6" class="table-empty">
                                     ยังไม่มีประวัติการขาย — เริ่มขายสินค้าจากฟอร์มด้านบน
                                 </td>
                             </tr>
@@ -235,7 +247,8 @@ $sales = $pdo->query("
                                 <tr>
                                     <td><span class="badge badge-info">#<?= $s['id'] ?></span></td>
                                     <td><?= date('d/m/Y H:i', strtotime($s['sale_date'])) ?></td>
-                                    <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="<?= htmlspecialchars($s['items_summary']) ?>">
+                                    <td><?= htmlspecialchars($s['sold_by']) ?></td>
+                                    <td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="<?= htmlspecialchars($s['items_summary']) ?>">
                                         <?= htmlspecialchars($s['items_summary']) ?>
                                     </td>
                                     <td><?= $s['total_items'] ?> ชิ้น</td>
@@ -293,21 +306,16 @@ $sales = $pdo->query("
             }
         }
 
-        function updatePrice(select) {
-            calculateTotal();
-        }
+        function updatePrice(select) { calculateTotal(); }
 
         function calculateTotal() {
             let total = 0;
-            const rows = document.querySelectorAll('.sale-item-row');
-            rows.forEach(row => {
+            document.querySelectorAll('.sale-item-row').forEach(row => {
                 const select = row.querySelector('.product-select');
                 const qtyInput = row.querySelector('.qty-input');
-                const selectedOption = select.options[select.selectedIndex];
-                if (selectedOption && selectedOption.dataset.price) {
-                    const price = parseFloat(selectedOption.dataset.price);
-                    const qty = parseInt(qtyInput.value) || 0;
-                    total += price * qty;
+                const opt = select.options[select.selectedIndex];
+                if (opt && opt.dataset.price) {
+                    total += parseFloat(opt.dataset.price) * (parseInt(qtyInput.value) || 0);
                 }
             });
             document.getElementById('grandTotal').textContent = '฿' + total.toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -315,9 +323,7 @@ $sales = $pdo->query("
 
         function resetForm() {
             const container = document.getElementById('saleItems');
-            while (container.children.length > 1) {
-                container.removeChild(container.lastChild);
-            }
+            while (container.children.length > 1) container.removeChild(container.lastChild);
             calculateTotal();
         }
     </script>
