@@ -75,6 +75,10 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
             <a href="sales.php" class="nav-link">
                 <span class="nav-icon">💰</span> Sales
             </a>
+            <div class="nav-label">บัญชี</div>
+            <a href="profile.php" class="nav-link">
+                <span class="nav-icon">👤</span> โปรไฟล์
+            </a>
         </nav>
         <div class="sidebar-user">
             <div class="user-avatar"><?= strtoupper(substr($user['username'], 0, 1)) ?></div>
