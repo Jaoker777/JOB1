@@ -155,11 +155,11 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
                 <div class="product-grid">
                     <?php foreach ($products as $p): ?>
                         <div class="product-card" id="product-<?= $p['id'] ?>">
-                            <div class="product-image">
+                            <div class="product-image" onclick="openLightbox('<?= htmlspecialchars($p['image_url'] ?? '', ENT_QUOTES) ?>', '<?= htmlspecialchars($p['name'], ENT_QUOTES) ?>')">
                                 <?php if ($p['image_url']): ?>
-                                    <img src="<?= htmlspecialchars($p['image_url']) ?>" alt="<?= htmlspecialchars($p['name']) ?>" loading="lazy">
+                                    <img src="<?= htmlspecialchars($p['image_url']) ?>" alt="<?= htmlspecialchars($p['name']) ?>" loading="lazy" style="cursor: zoom-in;">
                                 <?php else: ?>
-                                    <div class="product-image-placeholder">🎮</div>
+                                    <div class="product-image-placeholder" style="cursor: default;">🎮</div>
                                 <?php endif; ?>
                                 <span class="product-category-tag"><?= htmlspecialchars($p['category_name']) ?></span>
                                 <?php if ($p['stock_quantity'] < 5 && $p['stock_quantity'] > 0): ?>
@@ -194,101 +194,58 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
 
 <?php include 'cart_system.php'; ?>
 
+<!-- Product Image Lightbox Modal -->
+<div class="lightbox-overlay" id="productLightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+        <img id="lightboxImg" src="" alt="Zoomed Product">
+        <div id="lightboxCaption" style="margin-top: 12px; font-weight: 700; text-align: center; color: var(--text-primary);"></div>
+    </div>
+</div>
+
 <script>
-    // --- Cart System (localStorage) ---
-    let cart = JSON.parse(localStorage.getItem('nournia_cart') || '[]');
-    updateSidebarBadge();
-
-    function updateSidebarBadge() {
-        const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
-        const badge = document.getElementById('sidebarCartCount');
-        if (badge) badge.textContent = totalItems > 0 ? totalItems : '';
-    }
-
-    function addToCart(id, name, price, image) {
-        const existing = cart.find(item => item.id === id);
-        if (existing) {
-            existing.qty += 1;
-        } else {
-            cart.push({ id, name, price, image, qty: 1 });
+    // Initial UI sync is handled by cart_system.php
+    
+    // --- Lightbox Functions ---
+    function openLightbox(src, name) {
+        console.log('Opening lightbox for:', name, src);
+        if (!src || src === '') {
+            console.warn('No image source provided');
+            return;
         }
-        saveCart();
-        updateSidebarBadge();
-
-        const btn = document.getElementById('cartBtn-' + id);
-        if (btn) {
-            btn.textContent = '✅ เพิ่มแล้ว!';
-            btn.style.background = 'var(--success)';
-            setTimeout(() => {
-                btn.innerHTML = '🛒 Add';
-                btn.style.background = '';
-            }, 1200);
+        
+        const overlay = document.getElementById('productLightbox');
+        const img = document.getElementById('lightboxImg');
+        const caption = document.getElementById('lightboxCaption');
+        
+        if (!overlay || !img) {
+            console.error('Lightbox elements not found');
+            return;
         }
+
+        img.src = src;
+        caption.textContent = name;
+        overlay.style.display = 'flex';
+        
+        setTimeout(() => {
+            overlay.classList.add('active');
+        }, 50);
+        
+        document.body.style.overflow = 'hidden'; 
     }
 
-    function removeFromCart(id) {
-        cart = cart.filter(item => item.id !== id);
-        saveCart();
-        updateSidebarBadge();
+    function closeLightbox() {
+        const overlay = document.getElementById('productLightbox');
+        if (!overlay) return;
+        overlay.classList.remove('active');
+        
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            document.body.style.overflow = '';
+        }, 300);
     }
 
-    function updateQty(id, delta) {
-        const item = cart.find(i => i.id === id);
-        if (item) {
-            item.qty += delta;
-            if (item.qty <= 0) {
-                removeFromCart(id);
-                return;
-            }
-        }
-        saveCart();
-        updateSidebarBadge();
-    }
-
-    function clearCart() {
-        if (cart.length === 0) return;
-        if (!confirm('ยืนยันล้างตะกร้าสินค้าทั้งหมด?')) return;
-        cart = [];
-        saveCart();
-        updateSidebarBadge();
-    }
-
-    function saveCart() {
-        localStorage.setItem('nournia_cart', JSON.stringify(cart));
-    }
-
-    function checkout() {
-        if (cart.length === 0) return;
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = 'sales.php';
-
-        const actionInput = document.createElement('input');
-        actionInput.type = 'hidden';
-        actionInput.name = 'action';
-        actionInput.value = 'create_sale';
-        form.appendChild(actionInput);
-
-        cart.forEach(item => {
-            const pid = document.createElement('input');
-            pid.type = 'hidden';
-            pid.name = 'product_id[]';
-            pid.value = item.id;
-            form.appendChild(pid);
-
-            const qty = document.createElement('input');
-            qty.type = 'hidden';
-            qty.name = 'quantity[]';
-            qty.value = item.qty;
-            form.appendChild(qty);
-        });
-
-        document.body.appendChild(form);
-        localStorage.removeItem('nournia_cart');
-        form.submit();
-    }
-
-    // Search debounce
+    // --- Interaction Search ---
     let searchTimer;
     function debounceSearch() {
         clearTimeout(searchTimer);
