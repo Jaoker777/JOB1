@@ -98,11 +98,17 @@ $products = $pdo->query("
         <nav class="sidebar-nav">
             <div class="nav-label">Menu</div>
             <a href="index.php" class="nav-link">
-                <span class="nav-icon">📊</span> Dashboard
+                <span class="nav-icon">🏠</span> หน้าร้าน
             </a>
+            <?php if ($isAdmin): ?>
+            <div class="nav-label">Admin</div>
             <a href="products.php" class="nav-link active">
-                <span class="nav-icon">📦</span> Products
+                <span class="nav-icon">📦</span> จัดการสินค้า
             </a>
+            <a href="categories.php" class="nav-link">
+                <span class="nav-icon">🏷️</span> หมวดหมู่
+            </a>
+            <?php endif; ?>
             <a href="sales.php" class="nav-link">
                 <span class="nav-icon">💰</span> Sales
             </a>
@@ -113,7 +119,16 @@ $products = $pdo->query("
         </nav>
         <div class="sidebar-user">
             <div class="user-avatar"><?= strtoupper(substr($user['username'], 0, 1)) ?></div>
-    <?php include 'navbar.php'; ?>
+            <div class="user-info">
+                <div class="user-name"><?= htmlspecialchars($user['username']) ?></div>
+                <div class="user-role"><?= $user['role'] === 'admin' ? '🛠 Admin' : '👤 User' ?></div>
+            </div>
+            <a href="logout.php" class="btn-logout" title="ออกจากระบบ">🚪</a>
+        </div>
+        <div class="sidebar-footer">
+            Nournia Shop &copy; <?= date('Y') ?>
+        </div>
+    </aside>
 
     <!-- Main Content -->
     <main class="main-content">

@@ -71,6 +71,9 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
             <a href="products.php" class="nav-link">
                 <span class="nav-icon">📦</span> จัดการสินค้า
             </a>
+            <a href="categories.php" class="nav-link">
+                <span class="nav-icon">🏷️</span> หมวดหมู่
+            </a>
             <?php endif; ?>
             <a href="sales.php" class="nav-link">
                 <span class="nav-icon">💰</span> Sales
@@ -81,7 +84,17 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
             </a>
         </nav>
         <div class="sidebar-user">
-    <?php include 'navbar.php'; ?>
+            <div class="user-avatar"><?= strtoupper(substr($user['username'], 0, 1)) ?></div>
+            <div class="user-info">
+                <div class="user-name"><?= htmlspecialchars($user['username']) ?></div>
+                <div class="user-role"><?= $user['role'] === 'admin' ? '🛠 Admin' : '👤 User' ?></div>
+            </div>
+            <a href="logout.php" class="btn-logout" title="ออกจากระบบ">🚪</a>
+        </div>
+        <div class="sidebar-footer">
+            Nournia Shop &copy; <?= date('Y') ?>
+        </div>
+    </aside>
 
     <!-- Main Content -->
     <main class="main-content">

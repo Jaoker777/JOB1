@@ -145,6 +145,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             <a href="products.php" class="nav-link">
                 <span class="nav-icon">📦</span> จัดการสินค้า
             </a>
+            <a href="categories.php" class="nav-link">
+                <span class="nav-icon">🏷️</span> หมวดหมู่
+            </a>
             <?php endif; ?>
             <a href="sales.php" class="nav-link">
                 <span class="nav-icon">💰</span> Sales
@@ -156,7 +159,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         </nav>
         <div class="sidebar-user">
             <div class="user-avatar"><?= strtoupper(substr($user['username'], 0, 1)) ?></div>
-    <?php include 'navbar.php'; ?>
+            <div class="user-info">
+                <div class="user-name"><?= htmlspecialchars($user['username']) ?></div>
+                <div class="user-role"><?= $user['role'] === 'admin' ? '🛠 Admin' : '👤 User' ?></div>
+            </div>
+            <a href="logout.php" class="btn-logout" title="ออกจากระบบ">🚪</a>
+        </div>
+        <div class="sidebar-footer">
+            Nournia Shop &copy; <?= date('Y') ?>
+        </div>
+    </aside>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -165,125 +177,126 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             <p>ดูและแก้ไขข้อมูลส่วนตัว</p>
         </div>
 
-        <div class="page-body">
-            <?php if ($message): ?>
-                <div class="alert alert-<?= $messageType ?>">
-                    <?= $message ?>
-                </div>
-            <?php endif; ?>
+            <div class="page-body">
+                <?php if ($message): ?>
+                    <div class="alert alert-<?= $messageType ?>">
+                        <?= $message ?>
+                    </div>
+                <?php endif; ?>
 
-            <div class="profile-grid">
-                <!-- Profile Card -->
-                <div class="profile-card">
-                    <div class="profile-avatar-section">
-                        <div class="profile-avatar-lg">
-                            <?= strtoupper(substr($profile['username'], 0, 1)) ?>
-                        </div>
-                        <div class="profile-user-info">
-                            <h3><?= htmlspecialchars($profile['username']) ?></h3>
-                            <span class="badge <?= $profile['role'] === 'admin' ? 'badge-info' : 'badge-success' ?>">
-                                <?= $profile['role'] === 'admin' ? '🛠 Admin' : '👤 User' ?>
-                            </span>
-                        </div>
-                        <div class="profile-meta">
-                            <div class="profile-meta-item">
-                                <span class="profile-meta-label">สมาชิกตั้งแต่</span>
-                                <span class="profile-meta-value"><?= date('d/m/Y', strtotime($profile['created_at'])) ?></span>
+                <div class="profile-grid">
+                    <!-- Profile Card -->
+                    <div class="profile-card">
+                        <div class="profile-avatar-section">
+                            <div class="profile-avatar-lg">
+                                <?= strtoupper(substr($profile['username'], 0, 1)) ?>
+                            </div>
+                            <div class="profile-user-info">
+                                <h3><?= htmlspecialchars($profile['username']) ?></h3>
+                                <span class="badge <?= $profile['role'] === 'admin' ? 'badge-info' : 'badge-success' ?>">
+                                    <?= $profile['role'] === 'admin' ? '🛠 Admin' : '👤 User' ?>
+                                </span>
+                            </div>
+                            <div class="profile-meta">
+                                <div class="profile-meta-item">
+                                    <span class="profile-meta-label">สมาชิกตั้งแต่</span>
+                                    <span class="profile-meta-value"><?= date('d/m/Y', strtotime($profile['created_at'])) ?></span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Edit Profile Form -->
-                <div class="profile-form-section">
-                    <div class="table-container">
-                        <div class="table-header">
-                            <h3>📝 แก้ไขข้อมูลส่วนตัว</h3>
+                    <!-- Edit Profile Form -->
+                    <div class="profile-form-section">
+                        <div class="table-container">
+                            <div class="table-header">
+                                <h3>📝 แก้ไขข้อมูลส่วนตัว</h3>
+                            </div>
+                            <div style="padding:24px;">
+                                <form method="POST" id="profileForm" novalidate>
+                                    <input type="hidden" name="action" value="update_profile">
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">ชื่อผู้ใช้ *</label>
+                                            <input type="text" name="username" id="profUsername" class="form-control"
+                                                   value="<?= htmlspecialchars($profile['username']) ?>"
+                                                   required minlength="3" maxlength="50">
+                                            <div class="form-hint" id="usernameHint" style="color:var(--danger);display:none;"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">อีเมล *</label>
+                                            <input type="email" name="email" id="profEmail" class="form-control"
+                                                   value="<?= htmlspecialchars($profile['email']) ?>"
+                                                   required>
+                                            <div class="form-hint" id="emailHint" style="color:var(--danger);display:none;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">เบอร์โทรศัพท์</label>
+                                            <input type="tel" name="phone" id="profPhone" class="form-control"
+                                                   value="<?= htmlspecialchars($profile['phone'] ?? '') ?>"
+                                                   placeholder="08x-xxx-xxxx">
+                                            <div class="form-hint" id="phoneHint" style="color:var(--danger);display:none;"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">บทบาท</label>
+                                            <input type="text" class="form-control" value="<?= $profile['role'] === 'admin' ? 'Admin' : 'User' ?>" disabled>
+                                            <div class="form-hint">ไม่สามารถเปลี่ยนบทบาทได้</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">ที่อยู่</label>
+                                        <textarea name="address" class="form-control" rows="3"
+                                                  placeholder="บ้านเลขที่ ซอย ถนน แขวง เขต จังหวัด รหัสไปรษณีย์"><?= htmlspecialchars($profile['address'] ?? '') ?></textarea>
+                                    </div>
+
+                                    <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:8px;">
+                                        <button type="submit" class="btn btn-primary">💾 บันทึกข้อมูล</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                        <div style="padding:24px;">
-                            <form method="POST" id="profileForm" novalidate>
-                                <input type="hidden" name="action" value="update_profile">
 
-                                <div class="form-row">
+                        <!-- Change Password -->
+                        <div class="table-container" style="margin-top:24px;">
+                            <div class="table-header">
+                                <h3>🔒 เปลี่ยนรหัสผ่าน</h3>
+                            </div>
+                            <div style="padding:24px;">
+                                <form method="POST" id="passwordForm" novalidate>
+                                    <input type="hidden" name="action" value="change_password">
+
                                     <div class="form-group">
-                                        <label class="form-label">ชื่อผู้ใช้ *</label>
-                                        <input type="text" name="username" id="profUsername" class="form-control"
-                                               value="<?= htmlspecialchars($profile['username']) ?>"
-                                               required minlength="3" maxlength="50">
-                                        <div class="form-hint" id="usernameHint" style="color:var(--danger);display:none;"></div>
+                                        <label class="form-label">รหัสผ่านปัจจุบัน *</label>
+                                        <input type="password" name="current_password" id="curPassword" class="form-control"
+                                               placeholder="••••••••" required>
+                                        <div class="form-hint" id="curPwdHint" style="color:var(--danger);display:none;"></div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="form-label">อีเมล *</label>
-                                        <input type="email" name="email" id="profEmail" class="form-control"
-                                               value="<?= htmlspecialchars($profile['email']) ?>"
-                                               required>
-                                        <div class="form-hint" id="emailHint" style="color:var(--danger);display:none;"></div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">รหัสผ่านใหม่ *</label>
+                                            <input type="password" name="new_password" id="newPassword" class="form-control"
+                                                   placeholder="อย่างน้อย 8 ตัวอักษร" required minlength="8">
+                                            <div class="form-hint" id="newPwdHint" style="color:var(--danger);display:none;"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">ยืนยันรหัสผ่านใหม่ *</label>
+                                            <input type="password" name="confirm_password" id="confirmPwd" class="form-control"
+                                                   placeholder="กรอกรหัสผ่านใหม่อีกครั้ง" required>
+                                            <div class="form-hint" id="confirmPwdHint" style="color:var(--danger);display:none;"></div>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="form-label">เบอร์โทรศัพท์</label>
-                                        <input type="tel" name="phone" id="profPhone" class="form-control"
-                                               value="<?= htmlspecialchars($profile['phone'] ?? '') ?>"
-                                               placeholder="08x-xxx-xxxx">
-                                        <div class="form-hint" id="phoneHint" style="color:var(--danger);display:none;"></div>
+                                    <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:8px;">
+                                        <button type="submit" class="btn btn-primary">🔑 เปลี่ยนรหัสผ่าน</button>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="form-label">บทบาท</label>
-                                        <input type="text" class="form-control" value="<?= $profile['role'] === 'admin' ? 'Admin' : 'User' ?>" disabled>
-                                        <div class="form-hint">ไม่สามารถเปลี่ยนบทบาทได้</div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label">ที่อยู่</label>
-                                    <textarea name="address" class="form-control" rows="3"
-                                              placeholder="บ้านเลขที่ ซอย ถนน แขวง เขต จังหวัด รหัสไปรษณีย์"><?= htmlspecialchars($profile['address'] ?? '') ?></textarea>
-                                </div>
-
-                                <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:8px;">
-                                    <button type="submit" class="btn btn-primary">💾 บันทึกข้อมูล</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Change Password -->
-                    <div class="table-container" style="margin-top:24px;">
-                        <div class="table-header">
-                            <h3>🔒 เปลี่ยนรหัสผ่าน</h3>
-                        </div>
-                        <div style="padding:24px;">
-                            <form method="POST" id="passwordForm" novalidate>
-                                <input type="hidden" name="action" value="change_password">
-
-                                <div class="form-group">
-                                    <label class="form-label">รหัสผ่านปัจจุบัน *</label>
-                                    <input type="password" name="current_password" id="curPassword" class="form-control"
-                                           placeholder="••••••••" required>
-                                    <div class="form-hint" id="curPwdHint" style="color:var(--danger);display:none;"></div>
-                                </div>
-
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="form-label">รหัสผ่านใหม่ *</label>
-                                        <input type="password" name="new_password" id="newPassword" class="form-control"
-                                               placeholder="อย่างน้อย 8 ตัวอักษร" required minlength="8">
-                                        <div class="form-hint" id="newPwdHint" style="color:var(--danger);display:none;"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">ยืนยันรหัสผ่านใหม่ *</label>
-                                        <input type="password" name="confirm_password" id="confirmPwd" class="form-control"
-                                               placeholder="กรอกรหัสผ่านใหม่อีกครั้ง" required>
-                                        <div class="form-hint" id="confirmPwdHint" style="color:var(--danger);display:none;"></div>
-                                    </div>
-                                </div>
-
-                                <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:8px;">
-                                    <button type="submit" class="btn btn-primary">🔑 เปลี่ยนรหัสผ่าน</button>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
