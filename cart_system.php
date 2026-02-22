@@ -9,7 +9,32 @@
             <!-- Cart items injected by JS -->
         </div>
         <div class="modal-footer" style="flex-direction:column;gap:12px;">
+            <!-- Coupon Section -->
+            <div id="couponSection" style="width:100%;display:none;">
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <input type="text" id="couponInput" class="form-control" 
+                           placeholder="🎟️ กรอกรหัสคูปอง..." 
+                           style="flex:1;padding:10px 14px;font-size:13px;text-transform:uppercase;">
+                    <button class="btn btn-ghost" onclick="applyCoupon()" id="couponApplyBtn" style="white-space:nowrap;">
+                        ✅ ใช้คูปอง
+                    </button>
+                </div>
+                <div id="couponMessage" style="font-size:12px;margin-top:6px;display:none;"></div>
+                <div id="couponApplied" style="display:none;margin-top:8px;padding:8px 12px;background:var(--success-bg, rgba(34,197,94,0.1));border:1px solid var(--success, #22c55e);border-radius:8px;font-size:12px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <span id="couponAppliedText" style="color:var(--success, #22c55e);font-weight:600;"></span>
+                        <button onclick="removeCoupon()" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:14px;">✕</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Totals -->
             <div class="sale-summary" style="width:100%;margin:0;">
+                <div id="discountRow" style="display:none;padding:4px 0;">
+                    <div class="total-row" style="color:var(--success, #22c55e);">
+                        <span>ส่วนลดคูปอง</span>
+                        <span id="cartDiscount">-฿0.00</span>
+                    </div>
+                </div>
                 <div class="total-row">
                     <span>ยอดรวม</span>
                     <span id="cartTotal">฿0.00</span>
@@ -31,6 +56,7 @@
 <script>
     // --- Cart System (localStorage) ---
     let cart = JSON.parse(localStorage.getItem('nournia_cart') || '[]');
+    let activeCoupon = null; // { coupon_id, discount, code }
     
     // Initial UI sync
     document.addEventListener('DOMContentLoaded', () => {
@@ -47,7 +73,6 @@
         saveCart();
         updateCartUI();
 
-        // Animate button if exists (for index.php store cards)
         const btn = document.getElementById('cartBtn-' + id);
         if (btn) {
             const originalText = btn.innerHTML;
@@ -84,6 +109,7 @@
     function clearCart() {
         if (!confirm('ยืนยันล้างตะกร้าสินค้าทั้งหมด?')) return;
         cart = [];
+        activeCoupon = null;
         saveCart();
         updateCartUI();
         renderCartModal();
@@ -98,14 +124,17 @@
         const floatBtn = document.getElementById('cartFloating');
         const countBadge = document.getElementById('cartCount');
         const navCountBadge = document.getElementById('navCartCount');
+        const sidebarBadge = document.getElementById('sidebarCartCount');
 
         if (totalItems > 0) {
             if (floatBtn) floatBtn.style.display = 'flex';
             if (countBadge) countBadge.textContent = totalItems;
             if (navCountBadge) navCountBadge.textContent = totalItems;
+            if (sidebarBadge) sidebarBadge.textContent = totalItems;
         } else {
             if (floatBtn) floatBtn.style.display = 'none';
             if (navCountBadge) navCountBadge.textContent = '0';
+            if (sidebarBadge) sidebarBadge.textContent = '';
         }
     }
 
@@ -118,6 +147,8 @@
         const body = document.getElementById('cartBody');
         if (!body) return;
         
+        const couponSection = document.getElementById('couponSection');
+
         if (cart.length === 0) {
             body.innerHTML = `
                 <div style="text-align:center;padding:40px 20px;">
@@ -127,6 +158,8 @@
                 </div>
             `;
             document.getElementById('cartTotal').textContent = '฿0.00';
+            if (couponSection) couponSection.style.display = 'none';
+            document.getElementById('discountRow').style.display = 'none';
             return;
         }
 
@@ -157,7 +190,91 @@
             `;
         });
         body.innerHTML = html;
-        document.getElementById('cartTotal').textContent = '฿' + total.toLocaleString('th-TH', {minimumFractionDigits:2});
+
+        // Show coupon section
+        if (couponSection) couponSection.style.display = 'block';
+
+        // Update totals
+        let finalTotal = total;
+        if (activeCoupon) {
+            finalTotal = Math.max(0, total - activeCoupon.discount);
+            document.getElementById('cartDiscount').textContent = '-฿' + activeCoupon.discount.toLocaleString('th-TH', {minimumFractionDigits:2});
+            document.getElementById('discountRow').style.display = 'block';
+        } else {
+            document.getElementById('discountRow').style.display = 'none';
+        }
+        document.getElementById('cartTotal').textContent = '฿' + finalTotal.toLocaleString('th-TH', {minimumFractionDigits:2});
+    }
+
+    // --- Coupon Functions ---
+    function applyCoupon() {
+        const input = document.getElementById('couponInput');
+        const code = input.value.trim().toUpperCase();
+        const msgEl = document.getElementById('couponMessage');
+        const btn = document.getElementById('couponApplyBtn');
+
+        if (!code) {
+            showCouponMsg('กรุณากรอกรหัสคูปอง', false);
+            return;
+        }
+
+        const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+
+        btn.disabled = true;
+        btn.textContent = '⏳ ตรวจสอบ...';
+
+        fetch('coupon_api.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `action=validate_coupon&code=${encodeURIComponent(code)}&order_total=${total}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            btn.disabled = false;
+            btn.textContent = '✅ ใช้คูปอง';
+
+            if (data.success) {
+                activeCoupon = {
+                    coupon_id: data.coupon_id,
+                    discount: data.discount,
+                    code: data.code
+                };
+                // Show applied badge
+                document.getElementById('couponAppliedText').textContent = `🎟️ ${data.code} — ลด ฿${data.discount.toLocaleString()}`;
+                document.getElementById('couponApplied').style.display = 'block';
+                input.style.display = 'none';
+                btn.style.display = 'none';
+                showCouponMsg(data.message, true);
+                renderCartModal();
+            } else {
+                showCouponMsg(data.message, false);
+            }
+        })
+        .catch(err => {
+            btn.disabled = false;
+            btn.textContent = '✅ ใช้คูปอง';
+            showCouponMsg('เกิดข้อผิดพลาด กรุณาลองใหม่', false);
+        });
+    }
+
+    function removeCoupon() {
+        activeCoupon = null;
+        document.getElementById('couponApplied').style.display = 'none';
+        document.getElementById('couponInput').style.display = '';
+        document.getElementById('couponInput').value = '';
+        document.getElementById('couponApplyBtn').style.display = '';
+        document.getElementById('couponMessage').style.display = 'none';
+        renderCartModal();
+    }
+
+    function showCouponMsg(msg, isSuccess) {
+        const el = document.getElementById('couponMessage');
+        el.style.display = 'block';
+        el.style.color = isSuccess ? 'var(--success, #22c55e)' : 'var(--danger, #ef4444)';
+        el.textContent = msg;
+        if (isSuccess) {
+            setTimeout(() => { el.style.display = 'none'; }, 3000);
+        }
     }
 
     function checkout() {
@@ -170,6 +287,22 @@
         actionInput.name = 'action';
         actionInput.value = 'create_sale';
         form.appendChild(actionInput);
+
+        // Add coupon data if applied
+        if (activeCoupon) {
+            const couponIdInput = document.createElement('input');
+            couponIdInput.type = 'hidden';
+            couponIdInput.name = 'coupon_id';
+            couponIdInput.value = activeCoupon.coupon_id;
+            form.appendChild(couponIdInput);
+
+            const discountInput = document.createElement('input');
+            discountInput.type = 'hidden';
+            discountInput.name = 'discount_amount';
+            discountInput.value = activeCoupon.discount;
+            form.appendChild(discountInput);
+        }
+
         cart.forEach(item => {
             const pid = document.createElement('input');
             pid.type = 'hidden';

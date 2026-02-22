@@ -54,9 +54,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 throw new Exception('ไม่มีรายการสินค้าที่ถูกต้อง');
             }
 
-            // Insert sale with user_id
+            // --- Coupon handling ---
+            $couponId = !empty($_POST['coupon_id']) ? (int)$_POST['coupon_id'] : null;
+            $discountAmount = 0;
+
+            if ($couponId) {
+                $couponStmt = $pdo->prepare("SELECT * FROM coupons WHERE id = ? AND is_active = 1");
+                $couponStmt->execute([$couponId]);
+                $coupon = $couponStmt->fetch();
+
+                if ($coupon && strtotime($coupon['expires_at']) >= strtotime('today')
+                    && $coupon['used_count'] < $coupon['max_uses']
+                    && $totalAmount >= $coupon['min_order_amount']) {
+                    // Check if user already used
+                    $usageCheck = $pdo->prepare("SELECT COUNT(*) FROM coupon_usage WHERE coupon_id = ? AND user_id = ?");
+                    $usageCheck->execute([$couponId, $user['id']]);
+                    if ($usageCheck->fetchColumn() == 0) {
+                        $discountAmount = $coupon['discount_amount'];
+                    }
+                }
+            }
+
+            $finalTotal = max(0, $totalAmount - $discountAmount);
+
+            // Insert sale with coupon info
             $saleStmt = $pdo->prepare("INSERT INTO sales (user_id, total_amount) VALUES (?, ?)");
-            $saleStmt->execute([$user['id'], $totalAmount]);
+            $saleStmt->execute([$user['id'], $finalTotal]);
             $saleId = $pdo->lastInsertId();
 
             $itemStmt = $pdo->prepare("INSERT INTO sale_items (sale_id, product_id, quantity, unit_price) VALUES (?, ?, ?, ?)");
@@ -67,8 +90,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 $stockStmt->execute([$item['quantity'], $item['product_id']]);
             }
 
+            // Record coupon usage
+            if ($couponId && $discountAmount > 0) {
+                $pdo->prepare("INSERT IGNORE INTO coupon_usage (coupon_id, user_id, sale_id) VALUES (?, ?, ?)")
+                    ->execute([$couponId, $user['id'], $saleId]);
+                $pdo->prepare("UPDATE coupons SET used_count = used_count + 1 WHERE id = ?")
+                    ->execute([$couponId]);
+            }
+
             $pdo->commit();
-            header("Location: sales.php?msg=created&id=$saleId");
+            $discountParam = $discountAmount > 0 ? "&discount=$discountAmount" : '';
+            header("Location: sales.php?msg=created&id=$saleId$discountParam");
             exit;
 
         } catch (Exception $e) {
@@ -82,7 +114,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // Success message
 if (isset($_GET['msg']) && $_GET['msg'] === 'created') {
     $saleId = (int) ($_GET['id'] ?? 0);
-    $message = "✅ บันทึกการขาย #$saleId เรียบร้อยแล้ว";
+    $discount = floatval($_GET['discount'] ?? 0);
+    $discountText = $discount > 0 ? " (ส่วนลดคูปอง ฿" . number_format($discount, 2) . ")" : '';
+    $message = "✅ บันทึกการขาย #$saleId เรียบร้อยแล้ว$discountText";
     $messageType = 'success';
 }
 
@@ -120,6 +154,7 @@ $sales = $pdo->query("
     <meta name="description" content="Nournia Shop sales — create orders and view transaction history.">
 </head>
 <body>
+<div class="dashboard-grid">
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-brand">
@@ -337,6 +372,8 @@ $sales = $pdo->query("
             calculateTotal();
         }
     </script>
+    </main>
+</div>
     <?php include 'cart_system.php'; ?>
     <?php include 'footer.php'; ?>
 </body>

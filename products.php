@@ -86,6 +86,7 @@ $products = $pdo->query("
     <meta name="description" content="Manage gaming gear products — add, edit, delete inventory items.">
 </head>
 <body>
+<div class="dashboard-grid">
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-brand">
@@ -330,6 +331,8 @@ $products = $pdo->query("
             }
         });
     </script>
+    </main>
+</div>
     <?php include 'cart_system.php'; ?>
     <?php include 'footer.php'; ?>
 </body>

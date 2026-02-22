@@ -126,6 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     <meta name="description" content="จัดการโปรไฟล์ผู้ใช้ — Nournia Shop">
 </head>
 <body>
+<div class="dashboard-grid">
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-brand">
@@ -385,6 +386,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             if (!valid) e.preventDefault();
         });
     </script>
+    </main>
+</div>
     <?php include 'cart_system.php'; ?>
     <?php include 'footer.php'; ?>
 </body>
