@@ -144,10 +144,10 @@
                         <div style="font-weight:600;font-size:14px;color:var(--text-primary);">${item.name}</div>
                         <div style="font-size:12px;color:var(--accent);">฿${item.price.toLocaleString()}</div>
                     </div>
-                    <div style="display:flex;align-items:center;gap:8px;background:var(--bg-tertiary);padding:4px;border-radius:4px;">
-                        <button class="qty-btn" onclick="updateQty(${item.id}, -1)" style="width:24px;height:24px;background:var(--bg-secondary);border:none;color:white;border-radius:4px;cursor:pointer;">−</button>
-                        <span style="font-size:14px;min-width:20px;text-align:center;">${item.qty}</span>
-                        <button class="qty-btn" onclick="updateQty(${item.id}, 1)" style="width:24px;height:24px;background:var(--bg-secondary);border:none;color:white;border-radius:4px;cursor:pointer;">+</button>
+                    <div style="display:flex;align-items:center;gap:8px;background:var(--bg-primary);padding:4px;border-radius:6px;">
+                        <button class="qty-btn" onclick="updateQty(${item.id}, -1)" style="width:26px;height:26px;background:var(--bg-tertiary);border:none;color:var(--text-primary);border-radius:6px;cursor:pointer;font-weight:700;">−</button>
+                        <span style="font-size:14px;min-width:20px;text-align:center;font-weight:600;">${item.qty}</span>
+                        <button class="qty-btn" onclick="updateQty(${item.id}, 1)" style="width:26px;height:26px;background:var(--bg-tertiary);border:none;color:var(--text-primary);border-radius:6px;cursor:pointer;font-weight:700;">+</button>
                     </div>
                     <div style="font-weight:700;font-size:14px;min-width:80px;text-align:right;">
                         ฿${lineTotal.toLocaleString()}

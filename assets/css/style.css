@@ -1,42 +1,42 @@
 /* ============================================
    Nournia Shop — Design System
-   Dark Theme | Inter Font | Purple/Violet Accent
+   Cute Pastel Theme | Inter Font | Pink Accent
    ============================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* --- CSS Variables --- */
 :root {
-    --bg-primary: #0f0f1a;
-    --bg-secondary: #1a1a2e;
-    --bg-tertiary: #2a2a40;
-    --bg-hover: #252540;
+    --bg-primary: #FFF7CD;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #FDC3A1;
+    --bg-hover: #fef0db;
 
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
+    --text-primary: #3d2c2c;
+    --text-secondary: #6b5050;
+    --text-muted: #9c8080;
 
-    --accent: #a855f7;
-    --accent-hover: #c084fc;
-    --accent-glow: rgba(168, 85, 247, 0.3);
-    --accent-subtle: rgba(168, 85, 247, 0.1);
-    --accent-gradient: linear-gradient(135deg, #a855f7, #6366f1);
+    --accent: #F57799;
+    --accent-hover: #fb9bb1;
+    --accent-glow: rgba(245, 119, 153, 0.25);
+    --accent-subtle: rgba(245, 119, 153, 0.08);
+    --accent-gradient: linear-gradient(135deg, #FB9B8F, #F57799);
 
-    --success: #22c55e;
-    --success-bg: rgba(34, 197, 94, 0.1);
-    --danger: #ef4444;
-    --danger-bg: rgba(239, 68, 68, 0.1);
-    --warning: #f59e0b;
-    --warning-bg: rgba(245, 158, 11, 0.1);
+    --success: #66bb6a;
+    --success-bg: rgba(102, 187, 106, 0.12);
+    --danger: #ef5350;
+    --danger-bg: rgba(239, 83, 80, 0.1);
+    --warning: #ffa726;
+    --warning-bg: rgba(255, 167, 38, 0.12);
 
-    --border: #2e2e45;
-    --border-light: #3b3b55;
+    --border: #f0d9c4;
+    --border-light: #fce4d6;
 
     --sidebar-width: 260px;
-    --radius: 12px;
-    --radius-sm: 8px;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
-    --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.2);
+    --radius: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 8px rgba(245, 119, 153, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 8px 24px rgba(245, 119, 153, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -69,8 +69,8 @@ body.auth-page {
     justify-content: center;
     background: var(--bg-primary);
     background-image:
-        radial-gradient(ellipse at 20% 50%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 20%, rgba(99, 102, 241, 0.06) 0%, transparent 50%);
+        radial-gradient(ellipse at 20% 50%, rgba(253, 195, 161, 0.3) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(245, 119, 153, 0.15) 0%, transparent 50%);
 }
 
 a {
@@ -584,7 +584,7 @@ tbody tr:last-child td {
 .btn-danger {
     background: var(--danger-bg);
     color: var(--danger);
-    border: 1px solid rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 83, 80, 0.2);
 }
 
 .btn-danger:hover {
@@ -1007,7 +1007,7 @@ textarea.form-control {
 .product-card:hover {
     transform: translateY(-6px);
     border-color: var(--accent);
-    box-shadow: 0 12px 40px rgba(168, 85, 247, 0.15);
+    box-shadow: 0 12px 40px rgba(245, 119, 153, 0.15);
 }
 
 .product-image {
@@ -1047,9 +1047,9 @@ textarea.form-control {
     border-radius: 20px;
     font-size: 11px;
     font-weight: 600;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(8px);
-    color: var(--accent-hover);
+    color: var(--accent);
     letter-spacing: 0.3px;
 }
 
@@ -1186,7 +1186,7 @@ textarea.form-control {
     }
 
     50% {
-        box-shadow: 0 4px 30px rgba(168, 85, 247, 0.5);
+        box-shadow: 0 4px 30px rgba(245, 119, 153, 0.4);
     }
 }
 
@@ -1363,7 +1363,7 @@ textarea.form-control {
    TOP NAVBAR & FOOTER
    ============================================ */
 .top-navbar {
-    background: rgba(30, 27, 46, 0.8);
+    background: rgba(255, 255, 255, 0.85);
     border-bottom: 1px solid var(--border);
     padding: 0 40px;
     height: 70px;
@@ -1439,7 +1439,7 @@ textarea.form-control {
     border-color: var(--accent);
     color: var(--accent);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
+    box-shadow: 0 4px 12px rgba(245, 119, 153, 0.2);
 }
 
 .nav-badge {
