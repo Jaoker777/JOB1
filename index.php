@@ -83,6 +83,9 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
             <a href="profile.php" class="nav-link">
                 <span class="nav-icon">👤</span> โปรไฟล์
             </a>
+            <a href="javascript:void(0)" class="nav-link" onclick="openCartModal()">
+                <span class="nav-icon">🛒</span> ตะกร้าสินค้า <span class="cart-sidebar-badge" id="sidebarCartCount"></span>
+            </a>
         </nav>
         <div class="sidebar-user">
             <div class="user-avatar"><?= strtoupper(substr($user['username'], 0, 1)) ?></div>
@@ -187,37 +190,20 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
             <?php endif; ?>
         </div>
     </main>
-
-    <!-- Cart Panel (Column 3: 320px) -->
-    <aside class="cart-panel">
-        <div class="cart-panel-header">
-            <h3>🛒 ตะกร้าสินค้า</h3>
-            <span class="cart-count" id="panelCartCount">0</span>
-        </div>
-        <div class="cart-panel-body" id="panelCartBody">
-            <div class="cart-panel-empty">
-                <div class="empty-icon">🛒</div>
-                <div>ตะกร้าของคุณยังว่างอยู่</div>
-                <div style="font-size:12px;">เลือกสินค้าเพื่อเพิ่มลงตะกร้า</div>
-            </div>
-        </div>
-        <div class="cart-panel-footer">
-            <div class="cart-panel-total">
-                <span class="total-label">ยอดรวม</span>
-                <span class="total-amount" id="panelCartTotal">฿0.00</span>
-            </div>
-            <div class="cart-panel-actions">
-                <button class="btn btn-ghost" onclick="clearCart()">🗑️ ล้าง</button>
-                <button class="btn btn-primary" onclick="checkout()">💳 ชำระเงิน</button>
-            </div>
-        </div>
-    </aside>
 </div>
+
+<?php include 'cart_system.php'; ?>
 
 <script>
     // --- Cart System (localStorage) ---
     let cart = JSON.parse(localStorage.getItem('nournia_cart') || '[]');
-    renderCartPanel();
+    updateSidebarBadge();
+
+    function updateSidebarBadge() {
+        const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
+        const badge = document.getElementById('sidebarCartCount');
+        if (badge) badge.textContent = totalItems > 0 ? totalItems : '';
+    }
 
     function addToCart(id, name, price, image) {
         const existing = cart.find(item => item.id === id);
@@ -227,7 +213,7 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
             cart.push({ id, name, price, image, qty: 1 });
         }
         saveCart();
-        renderCartPanel();
+        updateSidebarBadge();
 
         const btn = document.getElementById('cartBtn-' + id);
         if (btn) {
@@ -243,7 +229,7 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
     function removeFromCart(id) {
         cart = cart.filter(item => item.id !== id);
         saveCart();
-        renderCartPanel();
+        updateSidebarBadge();
     }
 
     function updateQty(id, delta) {
@@ -256,7 +242,7 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
             }
         }
         saveCart();
-        renderCartPanel();
+        updateSidebarBadge();
     }
 
     function clearCart() {
@@ -264,56 +250,11 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
         if (!confirm('ยืนยันล้างตะกร้าสินค้าทั้งหมด?')) return;
         cart = [];
         saveCart();
-        renderCartPanel();
+        updateSidebarBadge();
     }
 
     function saveCart() {
         localStorage.setItem('nournia_cart', JSON.stringify(cart));
-    }
-
-    function renderCartPanel() {
-        const body = document.getElementById('panelCartBody');
-        const countBadge = document.getElementById('panelCartCount');
-        const totalEl = document.getElementById('panelCartTotal');
-        const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
-
-        countBadge.textContent = totalItems;
-
-        if (cart.length === 0) {
-            body.innerHTML = `
-                <div class="cart-panel-empty">
-                    <div class="empty-icon">🛒</div>
-                    <div>ตะกร้าของคุณยังว่างอยู่</div>
-                    <div style="font-size:12px;">เลือกสินค้าเพื่อเพิ่มลงตะกร้า</div>
-                </div>`;
-            totalEl.textContent = '฿0.00';
-            return;
-        }
-
-        let total = 0;
-        let html = '';
-        cart.forEach(item => {
-            const lineTotal = item.price * item.qty;
-            total += lineTotal;
-            html += `
-                <div class="cart-panel-item">
-                    <div class="cart-panel-item-img">
-                        ${item.image ? `<img src="${item.image}" alt="${item.name}">` : '<span style="font-size:18px;">🎮</span>'}
-                    </div>
-                    <div class="cart-panel-item-details">
-                        <div class="cart-panel-item-name">${item.name}</div>
-                        <div class="cart-panel-item-price">฿${item.price.toLocaleString()}</div>
-                    </div>
-                    <div class="cart-panel-item-qty">
-                        <button onclick="updateQty(${item.id}, -1)">−</button>
-                        <span>${item.qty}</span>
-                        <button onclick="updateQty(${item.id}, 1)">+</button>
-                    </div>
-                    <button class="cart-panel-item-remove" onclick="removeFromCart(${item.id})">✕</button>
-                </div>`;
-        });
-        body.innerHTML = html;
-        totalEl.textContent = '฿' + total.toLocaleString('th-TH', {minimumFractionDigits:2});
     }
 
     function checkout() {
