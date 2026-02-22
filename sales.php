@@ -147,16 +147,7 @@ $sales = $pdo->query("
         </nav>
         <div class="sidebar-user">
             <div class="user-avatar"><?= strtoupper(substr($user['username'], 0, 1)) ?></div>
-            <div class="user-info">
-                <div class="user-name"><?= htmlspecialchars($user['username']) ?></div>
-                <div class="user-role"><?= $user['role'] === 'admin' ? '🛠 Admin' : '👤 User' ?></div>
-            </div>
-            <a href="logout.php" class="btn-logout" title="ออกจากระบบ">🚪</a>
-        </div>
-        <div class="sidebar-footer">
-            Nournia Shop &copy; <?= date('Y') ?>
-        </div>
-    </aside>
+    <?php include 'navbar.php'; ?>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -331,5 +322,7 @@ $sales = $pdo->query("
             calculateTotal();
         }
     </script>
+    <?php include 'cart_system.php'; ?>
+    <?php include 'footer.php'; ?>
 </body>
 </html>

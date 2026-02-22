@@ -81,17 +81,7 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
             </a>
         </nav>
         <div class="sidebar-user">
-            <div class="user-avatar"><?= strtoupper(substr($user['username'], 0, 1)) ?></div>
-            <div class="user-info">
-                <div class="user-name"><?= htmlspecialchars($user['username']) ?></div>
-                <div class="user-role"><?= $user['role'] === 'admin' ? '🛠 Admin' : '👤 User' ?></div>
-            </div>
-            <a href="logout.php" class="btn-logout" title="ออกจากระบบ">🚪</a>
-        </div>
-        <div class="sidebar-footer">
-            Nournia Shop &copy; <?= date('Y') ?>
-        </div>
-    </aside>
+    <?php include 'navbar.php'; ?>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -194,23 +184,6 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
         </div>
     </main>
 
-    <!-- Cart Floating Button -->
-    <div class="cart-floating" id="cartFloating" onclick="openCartModal()" style="display:none;">
-        <span class="cart-floating-icon">🛒</span>
-        <span class="cart-floating-count" id="cartCount">0</span>
-    </div>
-
-    <!-- Cart Modal -->
-    <div class="modal-overlay" id="cartModal">
-        <div class="modal" style="max-width:600px;">
-            <div class="modal-header">
-                <h3>🛒 ตะกร้าสินค้า</h3>
-                <button class="modal-close" onclick="closeModal('cartModal')">&times;</button>
-            </div>
-            <div class="modal-body" id="cartBody">
-                <!-- Cart items injected by JS -->
-            </div>
-            <div class="modal-footer" style="flex-direction:column;gap:12px;">
                 <div class="sale-summary" style="width:100%;margin:0;">
                     <div class="total-row">
                         <span>ยอดรวม</span>
@@ -288,12 +261,15 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
             const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
             const floatBtn = document.getElementById('cartFloating');
             const countBadge = document.getElementById('cartCount');
+            const navCountBadge = document.getElementById('navCartCount');
 
             if (totalItems > 0) {
                 floatBtn.style.display = 'flex';
                 countBadge.textContent = totalItems;
+                if (navCountBadge) navCountBadge.textContent = totalItems;
             } else {
                 floatBtn.style.display = 'none';
+                if (navCountBadge) navCountBadge.textContent = '0';
             }
         }
 
@@ -392,5 +368,6 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
             }, 600);
         }
     </script>
+    <?php include 'footer.php'; ?>
 </body>
 </html>

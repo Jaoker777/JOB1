@@ -1359,6 +1359,125 @@ textarea.form-control {
     }
 }
 
+/* ============================================
+   TOP NAVBAR & FOOTER
+   ============================================ */
+.top-navbar {
+    background: rgba(30, 27, 46, 0.8);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    backdrop-filter: blur(12px);
+}
+
+.navbar-brand {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--text-primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    letter-spacing: -0.5px;
+}
+
+.navbar-brand .brand-icon {
+    font-size: 26px;
+    filter: drop-shadow(0 0 8px var(--accent-glow));
+}
+
+.navbar-links {
+    display: flex;
+    gap: 32px;
+}
+
+.nav-link-top {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-link-top:hover,
+.nav-link-top.active {
+    color: var(--accent);
+}
+
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-btn-icon {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.nav-btn-icon:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
+}
+
+.nav-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--danger);
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--bg-secondary);
+}
+
+.developer-footer {
+    padding: 40px 20px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.developer-footer p {
+    margin-bottom: 8px;
+}
+
+.developer-footer b {
+    color: var(--accent);
+    font-weight: 700;
+}
+
 /* --- Responsive --- */
 @media (max-width: 1024px) {
     .stats-grid {
