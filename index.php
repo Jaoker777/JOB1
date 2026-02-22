@@ -52,7 +52,8 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
     <meta name="description" content="Nournia Shop — ร้านขายอุปกรณ์เกมมิ่งเกียร์ครบวงจร">
 </head>
 <body>
-    <!-- Sidebar -->
+<div class="dashboard-grid">
+    <!-- Sidebar (Column 1: 250px) -->
     <aside class="sidebar">
         <div class="sidebar-brand">
             <div class="brand-icon">🎮</div>
@@ -96,7 +97,7 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
         </div>
     </aside>
 
-    <!-- Main Content -->
+    <!-- Main Content (Column 2: 1fr) -->
     <main class="main-content">
         <div class="page-header">
             <h2>🏠 สินค้าเกมมิ่งเกียร์</h2>
@@ -122,34 +123,24 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
                                value="<?= htmlspecialchars($searchQuery) ?>"
                                oninput="debounceSearch()">
                         <?php if ($searchQuery): ?>
-                            <a href="index.php<?= $selectedCategory ? '?category=' . $selectedCategory : '' ?>" class="search-clear">&times;</a>
+                            <a href="index.php" class="search-clear" title="ล้างการค้นหา">✕</a>
                         <?php endif; ?>
                     </div>
-                    <?php if ($selectedCategory > 0): ?>
-                        <input type="hidden" name="category" value="<?= $selectedCategory ?>">
-                    <?php endif; ?>
                 </form>
+            </div>
 
-                <div class="category-chips">
-                    <a href="index.php<?= $searchQuery ? '?search=' . urlencode($searchQuery) : '' ?>"
-                       class="chip <?= $selectedCategory === 0 ? 'chip-active' : '' ?>">
-                        ทั้งหมด
+            <!-- Category Filter Chips -->
+            <div class="category-chips">
+                <a href="index.php" class="chip <?= $selectedCategory === 0 ? 'active' : '' ?>">🏷️ ทั้งหมด</a>
+                <?php foreach ($categories as $cat): ?>
+                    <a href="index.php?category=<?= $cat['id'] ?>"
+                       class="chip <?= $selectedCategory === (int)$cat['id'] ? 'active' : '' ?>">
+                        <?= $cat['icon'] ?? '📦' ?> <?= htmlspecialchars($cat['name']) ?>
                     </a>
-                    <?php foreach ($categories as $cat): ?>
-                        <a href="index.php?category=<?= $cat['id'] ?><?= $searchQuery ? '&search=' . urlencode($searchQuery) : '' ?>"
-                           class="chip <?= $selectedCategory === $cat['id'] ? 'chip-active' : '' ?>">
-                            <?= $cat['icon'] ?? '📦' ?> <?= htmlspecialchars($cat['name']) ?>
-                        </a>
-                    <?php endforeach; ?>
-                </div>
+                <?php endforeach; ?>
             </div>
 
-            <!-- Results info -->
-            <div class="store-results-info">
-                <span>แสดง <?= count($products) ?> รายการ<?= $searchQuery ? ' สำหรับ "' . htmlspecialchars($searchQuery) . '"' : '' ?></span>
-            </div>
-
-            <!-- Product Grid -->
+            <!-- Products Grid -->
             <?php if (empty($products)): ?>
                 <div class="store-empty">
                     <div class="store-empty-icon">📦</div>
@@ -183,7 +174,7 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
                                         <button class="btn btn-primary btn-sm btn-add-cart"
                                                 onclick="addToCart(<?= $p['id'] ?>, '<?= htmlspecialchars($p['name'], ENT_QUOTES) ?>', <?= $p['price'] ?>, '<?= htmlspecialchars($p['image_url'] ?? '', ENT_QUOTES) ?>')"
                                                 id="cartBtn-<?= $p['id'] ?>">
-                                            🛒 Add to Cart
+                                            🛒 Add
                                         </button>
                                     <?php else: ?>
                                         <button class="btn btn-ghost btn-sm" disabled>สินค้าหมด</button>
@@ -197,190 +188,174 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
         </div>
     </main>
 
-                <div class="sale-summary" style="width:100%;margin:0;">
-                    <div class="total-row">
-                        <span>ยอดรวม</span>
-                        <span id="cartTotal">฿0.00</span>
-                    </div>
-                </div>
-                <div style="display:flex;gap:12px;width:100%;justify-content:flex-end;">
-                    <button class="btn btn-ghost" onclick="clearCart()">🗑️ ล้างตะกร้า</button>
-                    <button class="btn btn-primary" onclick="checkout()">💳 ชำระเงิน</button>
-                </div>
+    <!-- Cart Panel (Column 3: 320px) -->
+    <aside class="cart-panel">
+        <div class="cart-panel-header">
+            <h3>🛒 ตะกร้าสินค้า</h3>
+            <span class="cart-count" id="panelCartCount">0</span>
+        </div>
+        <div class="cart-panel-body" id="panelCartBody">
+            <div class="cart-panel-empty">
+                <div class="empty-icon">🛒</div>
+                <div>ตะกร้าของคุณยังว่างอยู่</div>
+                <div style="font-size:12px;">เลือกสินค้าเพื่อเพิ่มลงตะกร้า</div>
             </div>
         </div>
-    </div>
+        <div class="cart-panel-footer">
+            <div class="cart-panel-total">
+                <span class="total-label">ยอดรวม</span>
+                <span class="total-amount" id="panelCartTotal">฿0.00</span>
+            </div>
+            <div class="cart-panel-actions">
+                <button class="btn btn-ghost" onclick="clearCart()">🗑️ ล้าง</button>
+                <button class="btn btn-primary" onclick="checkout()">💳 ชำระเงิน</button>
+            </div>
+        </div>
+    </aside>
+</div>
 
-    <script>
-        // --- Cart System (localStorage) ---
-        let cart = JSON.parse(localStorage.getItem('nournia_cart') || '[]');
-        updateCartUI();
+<script>
+    // --- Cart System (localStorage) ---
+    let cart = JSON.parse(localStorage.getItem('nournia_cart') || '[]');
+    renderCartPanel();
 
-        function addToCart(id, name, price, image) {
-            const existing = cart.find(item => item.id === id);
-            if (existing) {
-                existing.qty += 1;
-            } else {
-                cart.push({ id, name, price, image, qty: 1 });
-            }
-            saveCart();
-            updateCartUI();
-
-            // Animate button
-            const btn = document.getElementById('cartBtn-' + id);
-            if (btn) {
-                btn.textContent = '✅ เพิ่มแล้ว!';
-                btn.style.background = 'var(--success)';
-                setTimeout(() => {
-                    btn.innerHTML = '🛒 Add to Cart';
-                    btn.style.background = '';
-                }, 1200);
-            }
+    function addToCart(id, name, price, image) {
+        const existing = cart.find(item => item.id === id);
+        if (existing) {
+            existing.qty += 1;
+        } else {
+            cart.push({ id, name, price, image, qty: 1 });
         }
+        saveCart();
+        renderCartPanel();
 
-        function removeFromCart(id) {
-            cart = cart.filter(item => item.id !== id);
-            saveCart();
-            updateCartUI();
-            renderCartModal();
+        const btn = document.getElementById('cartBtn-' + id);
+        if (btn) {
+            btn.textContent = '✅ เพิ่มแล้ว!';
+            btn.style.background = 'var(--success)';
+            setTimeout(() => {
+                btn.innerHTML = '🛒 Add';
+                btn.style.background = '';
+            }, 1200);
         }
+    }
 
-        function updateQty(id, delta) {
-            const item = cart.find(i => i.id === id);
-            if (item) {
-                item.qty += delta;
-                if (item.qty <= 0) {
-                    removeFromCart(id);
-                    return;
-                }
-            }
-            saveCart();
-            updateCartUI();
-            renderCartModal();
-        }
+    function removeFromCart(id) {
+        cart = cart.filter(item => item.id !== id);
+        saveCart();
+        renderCartPanel();
+    }
 
-        function clearCart() {
-            cart = [];
-            saveCart();
-            updateCartUI();
-            renderCartModal();
-        }
-
-        function saveCart() {
-            localStorage.setItem('nournia_cart', JSON.stringify(cart));
-        }
-
-        function updateCartUI() {
-            const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
-            const floatBtn = document.getElementById('cartFloating');
-            const countBadge = document.getElementById('cartCount');
-            const navCountBadge = document.getElementById('navCartCount');
-
-            if (totalItems > 0) {
-                floatBtn.style.display = 'flex';
-                countBadge.textContent = totalItems;
-                if (navCountBadge) navCountBadge.textContent = totalItems;
-            } else {
-                floatBtn.style.display = 'none';
-                if (navCountBadge) navCountBadge.textContent = '0';
-            }
-        }
-
-        function openCartModal() {
-            renderCartModal();
-            document.getElementById('cartModal').classList.add('active');
-        }
-
-        function renderCartModal() {
-            const body = document.getElementById('cartBody');
-            if (cart.length === 0) {
-                body.innerHTML = '<div class="table-empty" style="padding:32px;">ตะกร้าว่าง — เลือกสินค้าที่ต้องการ</div>';
-                document.getElementById('cartTotal').textContent = '฿0.00';
+    function updateQty(id, delta) {
+        const item = cart.find(i => i.id === id);
+        if (item) {
+            item.qty += delta;
+            if (item.qty <= 0) {
+                removeFromCart(id);
                 return;
             }
+        }
+        saveCart();
+        renderCartPanel();
+    }
 
-            let total = 0;
-            let html = '';
-            cart.forEach(item => {
-                const lineTotal = item.price * item.qty;
-                total += lineTotal;
-                html += `
-                    <div class="cart-item">
-                        <div class="cart-item-image">
-                            ${item.image ? `<img src="${item.image}" alt="${item.name}">` : '<div class="product-image-placeholder" style="width:56px;height:56px;font-size:20px;">🎮</div>'}
-                        </div>
-                        <div class="cart-item-info">
-                            <div class="cart-item-name">${item.name}</div>
-                            <div class="cart-item-price">฿${item.price.toLocaleString('th-TH', {minimumFractionDigits:2})}</div>
-                        </div>
-                        <div class="cart-item-qty">
-                            <button class="qty-btn" onclick="updateQty(${item.id}, -1)">−</button>
-                            <span class="qty-value">${item.qty}</span>
-                            <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
-                        </div>
-                        <div class="cart-item-total">
-                            ฿${lineTotal.toLocaleString('th-TH', {minimumFractionDigits:2})}
-                        </div>
-                        <button class="btn btn-danger btn-sm" onclick="removeFromCart(${item.id})" style="padding:4px 8px;">✕</button>
+    function clearCart() {
+        if (cart.length === 0) return;
+        if (!confirm('ยืนยันล้างตะกร้าสินค้าทั้งหมด?')) return;
+        cart = [];
+        saveCart();
+        renderCartPanel();
+    }
+
+    function saveCart() {
+        localStorage.setItem('nournia_cart', JSON.stringify(cart));
+    }
+
+    function renderCartPanel() {
+        const body = document.getElementById('panelCartBody');
+        const countBadge = document.getElementById('panelCartCount');
+        const totalEl = document.getElementById('panelCartTotal');
+        const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
+
+        countBadge.textContent = totalItems;
+
+        if (cart.length === 0) {
+            body.innerHTML = `
+                <div class="cart-panel-empty">
+                    <div class="empty-icon">🛒</div>
+                    <div>ตะกร้าของคุณยังว่างอยู่</div>
+                    <div style="font-size:12px;">เลือกสินค้าเพื่อเพิ่มลงตะกร้า</div>
+                </div>`;
+            totalEl.textContent = '฿0.00';
+            return;
+        }
+
+        let total = 0;
+        let html = '';
+        cart.forEach(item => {
+            const lineTotal = item.price * item.qty;
+            total += lineTotal;
+            html += `
+                <div class="cart-panel-item">
+                    <div class="cart-panel-item-img">
+                        ${item.image ? `<img src="${item.image}" alt="${item.name}">` : '<span style="font-size:18px;">🎮</span>'}
                     </div>
-                `;
-            });
-            body.innerHTML = html;
-            document.getElementById('cartTotal').textContent = '฿' + total.toLocaleString('th-TH', {minimumFractionDigits:2});
-        }
+                    <div class="cart-panel-item-details">
+                        <div class="cart-panel-item-name">${item.name}</div>
+                        <div class="cart-panel-item-price">฿${item.price.toLocaleString()}</div>
+                    </div>
+                    <div class="cart-panel-item-qty">
+                        <button onclick="updateQty(${item.id}, -1)">−</button>
+                        <span>${item.qty}</span>
+                        <button onclick="updateQty(${item.id}, 1)">+</button>
+                    </div>
+                    <button class="cart-panel-item-remove" onclick="removeFromCart(${item.id})">✕</button>
+                </div>`;
+        });
+        body.innerHTML = html;
+        totalEl.textContent = '฿' + total.toLocaleString('th-TH', {minimumFractionDigits:2});
+    }
 
-        function checkout() {
-            if (cart.length === 0) return;
-            // Build a form and submit to sales.php
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'sales.php';
+    function checkout() {
+        if (cart.length === 0) return;
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'sales.php';
 
-            const actionInput = document.createElement('input');
-            actionInput.type = 'hidden';
-            actionInput.name = 'action';
-            actionInput.value = 'create_sale';
-            form.appendChild(actionInput);
+        const actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'create_sale';
+        form.appendChild(actionInput);
 
-            cart.forEach(item => {
-                const pid = document.createElement('input');
-                pid.type = 'hidden';
-                pid.name = 'product_id[]';
-                pid.value = item.id;
-                form.appendChild(pid);
+        cart.forEach(item => {
+            const pid = document.createElement('input');
+            pid.type = 'hidden';
+            pid.name = 'product_id[]';
+            pid.value = item.id;
+            form.appendChild(pid);
 
-                const qty = document.createElement('input');
-                qty.type = 'hidden';
-                qty.name = 'quantity[]';
-                qty.value = item.qty;
-                form.appendChild(qty);
-            });
-
-            document.body.appendChild(form);
-            localStorage.removeItem('nournia_cart');
-            form.submit();
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
-
-        // Close modal on overlay click
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
-            overlay.addEventListener('click', function(e) {
-                if (e.target === this) this.classList.remove('active');
-            });
+            const qty = document.createElement('input');
+            qty.type = 'hidden';
+            qty.name = 'quantity[]';
+            qty.value = item.qty;
+            form.appendChild(qty);
         });
 
-        // Search debounce
-        let searchTimer;
-        function debounceSearch() {
-            clearTimeout(searchTimer);
-            searchTimer = setTimeout(() => {
-                document.getElementById('storeFilterForm').submit();
-            }, 600);
-        }
-    </script>
-    <?php include 'footer.php'; ?>
+        document.body.appendChild(form);
+        localStorage.removeItem('nournia_cart');
+        form.submit();
+    }
+
+    // Search debounce
+    let searchTimer;
+    function debounceSearch() {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
+            document.getElementById('storeFilterForm').submit();
+        }, 600);
+    }
+</script>
+<?php include 'footer.php'; ?>
 </body>
 </html>
