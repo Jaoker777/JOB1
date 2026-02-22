@@ -5,6 +5,12 @@ require_auth();
 $user = current_user();
 $isAdmin = is_admin();
 
+// Only admin can manage inventory
+if (!$isAdmin) {
+    header('Location: index.php?error=unauthorized');
+    exit;
+}
+
 $message = '';
 $messageType = '';
 

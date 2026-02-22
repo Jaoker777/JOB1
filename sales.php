@@ -130,8 +130,16 @@ $products = $pdo->query("
 ")->fetchAll();
 
 // --- Fetch sales history ---
-$sales = $pdo->query("
-    SELECT s.id, s.sale_date, s.total_amount,
+$historyWhere = '';
+$historyParams = [];
+
+if (!$isAdmin) {
+    $historyWhere = "WHERE s.user_id = ?";
+    $historyParams = [$user['id']];
+}
+
+$stmt = $pdo->prepare("
+    SELECT s.id, s.sale_date, s.total_amount, s.discount_amount,
            GROUP_CONCAT(CONCAT(p.name, ' x', si.quantity) SEPARATOR ', ') AS items_summary,
            SUM(si.quantity) AS total_items,
            COALESCE(u.username, '-') AS sold_by
@@ -139,10 +147,13 @@ $sales = $pdo->query("
     JOIN sale_items si ON s.id = si.sale_id
     JOIN products p ON si.product_id = p.id
     LEFT JOIN users u ON s.user_id = u.id
+    $historyWhere
     GROUP BY s.id
     ORDER BY s.sale_date DESC
     LIMIT 50
-")->fetchAll();
+");
+$stmt->execute($historyParams);
+$sales = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -213,7 +224,8 @@ $sales = $pdo->query("
                 </div>
             <?php endif; ?>
 
-            <!-- New Sale Form -->
+            <!-- New Sale Form (Admin Only) -->
+            <?php if ($isAdmin): ?>
             <div class="table-container" style="margin-bottom:28px;">
                 <div class="table-header">
                     <h3>🛒 สร้างรายการขายใหม่</h3>
@@ -237,33 +249,33 @@ $sales = $pdo->query("
                                 </div>
                                 <div class="form-group" style="margin-bottom:0;">
                                     <label class="form-label">จำนวน *</label>
-                                    <input type="number" name="quantity[]" class="form-control qty-input" min="1" value="1" required oninput="calculateTotal()">
+                                    <input type="number" name="quantity[]" class="form-control qty-input" value="1" min="1" required onchange="calculateTotal()">
                                 </div>
-                                <div style="padding-bottom:4px;">
-                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeItem(this)" style="margin-top:22px;">🗑️</button>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label class="form-label">ราคา/หน่วย</label>
+                                    <input type="text" class="form-control price-input" value="0.00" readonly>
                                 </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label class="form-label">รวม</label>
+                                    <input type="text" class="form-control line-total" value="0.00" readonly>
+                                </div>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)" style="margin-top:28px;">✕</button>
                             </div>
                         </div>
 
-                        <div style="margin-top:12px;display:flex;gap:12px;align-items:center;">
-                            <button type="button" class="btn btn-ghost" onclick="addItem()">+ เพิ่มรายการ</button>
-                        </div>
-
-                        <div class="sale-summary">
-                            <div class="total-row">
-                                <span>ยอดรวมทั้งหมด</span>
-                                <span id="grandTotal">฿0.00</span>
+                        <div style="margin-top:20px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); padding-top:20px;">
+                            <button type="button" class="btn btn-ghost" onclick="addItemRow()">+ เพิ่มสินค้า</button>
+                            
+                            <div style="text-align:right;">
+                                <div style="font-size:14px; color:var(--text-secondary); margin-bottom:4px;">ยอดรวมทั้งหมด</div>
+                                <div id="grandTotal" style="font-size:24px; font-weight:700; color:var(--accent); margin-bottom:16px;">฿0.00</div>
+                                <button type="submit" class="btn btn-primary btn-lg">✅ ยืนยันการขาย</button>
                             </div>
-                        </div>
-
-                        <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:12px;">
-                            <button type="reset" class="btn btn-ghost" onclick="setTimeout(resetForm, 10)">ล้างข้อมูล</button>
-                            <button type="submit" class="btn btn-primary">💳 บันทึกการขาย</button>
                         </div>
                     </form>
                 </div>
             </div>
-
+            <?php endif; ?>
             <!-- Sales History -->
             <div class="table-container">
                 <div class="table-header">
