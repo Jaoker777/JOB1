@@ -106,4 +106,5 @@ INSERT INTO products (category_id, name, description, price, stock_quantity, ima
 (8, 'G.SKILL Trident Z5 RGB 32GB', 'แรม DDR5-6000 CL30 RGB Dual Channel Intel XMP 3.0.', 5990.00, 11, 'assets/images/products/ram.png'),
 -- 9: อุปกรณ์เกมมิ่งอื่น ๆ
 (9, 'Secretlab TITAN Evo Gaming Chair', 'เก้าอี้เกมมิ่งระดับโปร Pebble+ หนัง Neo Hybrid รองรับถึง 130kg.', 15900.00, 4, 'assets/images/products/gaming_chair.png'),
-(9, 'Samsung 990 Pro 2TB NVMe', 'SSD PCIe 4.0 NVMe อ่าน 7450 MB/s เขียน 6900 MB/s.', 6490.00, 15, 'assets/images/products/ssd.png');
+(9, 'Samsung 990 Pro 2TB NVMe', 'SSD PCIe 4.0 NVMe อ่าน 7450 MB/s เขียน 6900 MB/s.', 6490.00, 15, 'assets/images/products/ssd.png'),
+(9, 'Xbox Elite Wireless Controller', 'จอยเกมไร้สายระดับโปร ปุ่ม Paddle ปรับแต่งได้ Bluetooth 5.0.', 5990.00, 10, 'assets/images/products/controller.png');

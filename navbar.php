@@ -10,6 +10,7 @@
         <a href="sales.php" class="nav-link-top <?= basename($_SERVER['PHP_SELF']) == 'sales.php' ? 'active' : '' ?>">💰 Sales</a>
         <?php if (isset($isAdmin) && $isAdmin): ?>
         <a href="products.php" class="nav-link-top <?= basename($_SERVER['PHP_SELF']) == 'products.php' ? 'active' : '' ?>">📦 Products</a>
+        <a href="categories.php" class="nav-link-top <?= basename($_SERVER['PHP_SELF']) == 'categories.php' ? 'active' : '' ?>">🏷️ Categories</a>
         <?php endif; ?>
     </nav>
     
