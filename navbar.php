@@ -7,6 +7,7 @@
     <nav class="navbar-links">
         <a href="index.php" class="nav-link-top <?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>">🏠 Dashboard</a>
         <a href="profile.php" class="nav-link-top <?= basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : '' ?>">👤 Profile</a>
+        <a href="coupons.php" class="nav-link-top <?= basename($_SERVER['PHP_SELF']) == 'coupons.php' ? 'active' : '' ?>">🎟️ Coupons</a>
         <a href="sales.php" class="nav-link-top <?= basename($_SERVER['PHP_SELF']) == 'sales.php' ? 'active' : '' ?>">💰 Sales</a>
         <?php if (isset($isAdmin) && $isAdmin): ?>
         <a href="products.php" class="nav-link-top <?= basename($_SERVER['PHP_SELF']) == 'products.php' ? 'active' : '' ?>">📦 Products</a>

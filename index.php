@@ -67,6 +67,9 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
             <a href="index.php" class="nav-link active">
                 <span class="nav-icon">🏠</span> หน้าร้าน
             </a>
+            <a href="coupons.php" class="nav-link">
+                <span class="nav-icon">🎟️</span> คูปองส่วนลด
+            </a>
             <?php if ($isAdmin): ?>
             <div class="nav-label">Admin</div>
             <a href="products.php" class="nav-link">

@@ -141,6 +141,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             <a href="index.php" class="nav-link">
                 <span class="nav-icon">🏠</span> หน้าร้าน
             </a>
+            <a href="coupons.php" class="nav-link">
+                <span class="nav-icon">🎟️</span> คูปองส่วนลด
+            </a>
             <?php if ($isAdmin): ?>
             <div class="nav-label">Admin</div>
             <a href="products.php" class="nav-link">
