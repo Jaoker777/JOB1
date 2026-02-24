@@ -1937,122 +1937,131 @@ textarea.form-control {
     color: white;
 }
 
-/* --- Coupons Page --- */
+/* --- Coupons Page (Premium Block Style) --- */
 .coupon-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 24px;
-    margin-top: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 32px;
+    margin-top: 40px;
 }
 
-.coupon-card {
-    background: var(--bg-secondary);
-    border: 2px dashed var(--border);
-    border-radius: var(--radius);
-    padding: 24px;
+.coupon-block {
+    background: #ffffff;
+    border-radius: 20px;
     position: relative;
-    transition: var(--transition);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    box-shadow: 0 10px 30px rgba(245, 119, 153, 0.08);
     overflow: hidden;
+    border: 1px solid rgba(245, 119, 153, 0.1);
 }
 
-.coupon-card::before, .coupon-card::after {
-    content: '';
-    position: absolute;
-    width: 24px;
-    height: 24px;
-    background: var(--bg-primary);
-    border-radius: 50%;
-    top: 50%;
-    transform: translateY(-50%);
-    border: 1px solid var(--border);
+.coupon-block:hover {
+    transform: scale(1.04);
+    box-shadow: 0 20px 45px rgba(245, 119, 153, 0.15);
 }
 
-.coupon-card::before { left: -14px; }
-.coupon-card::after { right: -14px; }
-
-.coupon-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px var(--accent-glow);
-}
-
-.coupon-badge {
-    display: inline-flex;
+/* Accent Header Area */
+.coupon-block-header {
+    height: 80px;
+    background: var(--accent-gradient);
+    display: flex;
     align-items: center;
-    gap: 6px;
-    background: var(--accent-subtle);
-    color: var(--accent);
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 700;
+    justify-content: center;
+    position: relative;
 }
 
-.coupon-discount {
+.coupon-block-header::after {
+    content: 'TICKET';
+    position: absolute;
+    bottom: -10px;
     font-size: 32px;
-    font-weight: 800;
-    color: var(--text-primary);
-    letter-spacing: -1px;
+    font-weight: 900;
+    color: white;
+    opacity: 0.1;
+    letter-spacing: 10px;
 }
 
-.coupon-details {
+.coupon-block-icon {
+    font-size: 32px;
+    color: white;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* Content Area */
+.coupon-block-body {
+    padding: 30px;
+    text-align: center;
     flex: 1;
 }
 
-.coupon-meta {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-top: 4px;
+.coupon-block-amount {
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1.1;
+    margin-bottom: 8px;
+}
+
+.coupon-block-amount span {
+    font-size: 20px;
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+.coupon-block-meta {
+    font-size: 14px;
+    color: #8a7b7b;
+    margin-bottom: 24px;
+}
+
+.coupon-block-meta b {
+    color: var(--text-primary);
+}
+
+/* Footer / Copy Area */
+.coupon-block-footer {
+    padding: 24px;
+    background: #fffcf8;
+    border-top: 2px dashed var(--border-light);
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 16px;
 }
 
-.coupon-meta b { color: var(--text-secondary); }
-
-.coupon-code-box {
-    background: var(--bg-primary);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-top: auto;
-}
-
-.coupon-code-text {
-    font-family: 'Monaco', 'Consolas', monospace;
+.coupon-block-code-preview {
+    font-family: 'Monaco', monospace;
     font-size: 18px;
     font-weight: 700;
-    color: var(--accent);
-    letter-spacing: 1px;
-}
-
-.btn-copy {
+    color: var(--text-primary);
     background: white;
     border: 1px solid var(--border);
-    color: var(--text-secondary);
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
+    padding: 12px;
+    border-radius: 12px;
+    letter-spacing: 2px;
 }
 
-.btn-copy:hover {
+.btn-block-copy {
     background: var(--accent);
     color: white;
-    border-color: var(--accent);
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 12px var(--accent-glow);
 }
 
-.btn-copy.copied {
+.btn-block-copy:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px var(--accent-glow);
+}
+
+.btn-block-copy.copied {
     background: var(--success);
-    color: white;
-    border-color: var(--success);
+    box-shadow: 0 4px 12px var(--success-bg);
 }

@@ -94,19 +94,23 @@ $coupons = $stmt->fetchAll();
             <?php else: ?>
                 <div class="coupon-grid">
                     <?php foreach ($coupons as $c): ?>
-                        <div class="coupon-card">
-                            <div class="coupon-badge">🔥 Hot Deal</div>
-                            <div class="coupon-details">
-                                <div class="coupon-discount">฿<?= number_format($c['discount_amount']) ?> OFF</div>
-                                <div class="coupon-meta">
-                                    <span>ซื้อขั้นต่ำ: <b>฿<?= number_format($c['min_order_amount']) ?></b></span>
-                                    <span>หมดอายุ: <b><?= date('d M Y', strtotime($c['expires_at'])) ?></b></span>
-                                </div>
+                        <div class="coupon-block">
+                            <div class="coupon-block-header">
+                                <span class="coupon-block-icon">🎟️</span>
                             </div>
-                            <div class="coupon-code-box">
-                                <span class="coupon-code-text" id="code-<?= $c['id'] ?>"><?= htmlspecialchars($c['code']) ?></span>
-                                <button class="btn-copy" onclick="copyCoupon('<?= htmlspecialchars($c['code']) ?>', this)">
-                                    Copy
+                            <div class="coupon-block-body">
+                                <div class="coupon-block-amount">
+                                    ฿<?= number_format($c['discount_amount']) ?><span>OFF</span>
+                                </div>
+                                <p class="coupon-block-meta">
+                                    สั่งซื้อขั้นต่ำ <b>฿<?= number_format($c['min_order_amount']) ?></b><br>
+                                    หมดอายุ: <b><?= date('d M Y', strtotime($c['expires_at'])) ?></b>
+                                </p>
+                            </div>
+                            <div class="coupon-block-footer">
+                                <div class="coupon-block-code-preview"><?= htmlspecialchars($c['code']) ?></div>
+                                <button class="btn-block-copy" onclick="copyCoupon('<?= htmlspecialchars($c['code']) ?>', this)">
+                                    คัดลอกโค้ดส่วนลด
                                 </button>
                             </div>
                         </div>
@@ -123,7 +127,7 @@ $coupons = $stmt->fetchAll();
     function copyCoupon(code, btn) {
         navigator.clipboard.writeText(code).then(() => {
             const originalText = btn.textContent;
-            btn.textContent = 'Copied!';
+            btn.textContent = '✅ คัดลอกแล้ว!';
             btn.classList.add('copied');
             
             setTimeout(() => {
