@@ -108,8 +108,55 @@ $categories = $pdo->query("
     <meta name="description" content="Admin — จัดการหมวดหมู่สินค้า Nournia Shop">
 </head>
 <body>
-    <?php include 'navbar.php'; ?>
+<div class="dashboard-grid">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">🎮</div>
+            <div>
+                <h1>Nournia Shop</h1>
+                <div class="brand-sub">Gaming Gear Store</div>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-label">Menu</div>
+            <a href="index.php" class="nav-link">
+                <span class="nav-icon">🏠</span> หน้าร้าน
+            </a>
+            <a href="coupons.php" class="nav-link">
+                <span class="nav-icon">🎟️</span> คูปองส่วนลด
+            </a>
+            <?php if ($isAdmin): ?>
+            <div class="nav-label">Admin</div>
+            <a href="products.php" class="nav-link">
+                <span class="nav-icon">📦</span> จัดการสินค้า
+            </a>
+            <a href="categories.php" class="nav-link active">
+                <span class="nav-icon">🏷️</span> หมวดหมู่
+            </a>
+            <?php endif; ?>
+            <a href="sales.php" class="nav-link">
+                <span class="nav-icon">💰</span> Sales
+            </a>
+            <div class="nav-label">บัญชี</div>
+            <a href="profile.php" class="nav-link">
+                <span class="nav-icon">👤</span> โปรไฟล์
+            </a>
+        </nav>
+        <div class="sidebar-user">
+            <div class="user-avatar"><?= strtoupper(substr($user['username'], 0, 1)) ?></div>
+            <div class="user-info">
+                <div class="user-name"><?= htmlspecialchars($user['username']) ?></div>
+                <div class="user-role"><?= $user['role'] === 'admin' ? '🛠 Admin' : '👤 User' ?></div>
+            </div>
+            <a href="logout.php" class="btn-logout" title="ออกจากระบบ">🚪</a>
+        </div>
+        <div class="sidebar-footer">
+            Nournia Shop &copy; <?= date('Y') ?>
+        </div>
+    </aside>
 
+    <!-- Main Content -->
     <main class="main-content">
         <div class="page-header">
             <h2>🏷️ จัดการหมวดหมู่</h2>
@@ -262,6 +309,8 @@ $categories = $pdo->query("
             });
         });
     </script>
+    </main>
+</div>
     <?php include 'cart_system.php'; ?>
     <?php include 'footer.php'; ?>
 </body>

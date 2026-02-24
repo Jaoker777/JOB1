@@ -1,6 +1,7 @@
 /* ============================================
    Nournia Shop — Design System
    Cute Pastel Theme | Inter Font | Pink Accent
+   ✨ Premium Edition
    ============================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -33,10 +34,10 @@
     --border-light: #fce4d6;
 
     --sidebar-width: 260px;
-    --radius: 14px;
-    --radius-sm: 10px;
-    --shadow: 0 2px 8px rgba(245, 119, 153, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
-    --shadow-lg: 0 8px 24px rgba(245, 119, 153, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
+    --radius: 18px;
+    --radius-sm: 12px;
+    --shadow: 0 2px 12px rgba(245, 119, 153, 0.1), 0 1px 4px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 12px 32px rgba(245, 119, 153, 0.15), 0 4px 12px rgba(0, 0, 0, 0.05);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -56,6 +57,10 @@ html {
 body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background: var(--bg-primary);
+    background-image:
+        radial-gradient(ellipse at 10% 20%, rgba(253, 195, 161, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 80%, rgba(245, 119, 153, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(255, 247, 205, 0.5) 0%, transparent 70%);
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
@@ -150,8 +155,10 @@ a {
 /* --- Sidebar --- */
 .sidebar {
     width: var(--sidebar-width);
-    background: var(--bg-secondary);
-    border-right: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(240, 217, 196, 0.5);
     position: sticky;
     top: 0;
     height: 100vh;
@@ -160,6 +167,7 @@ a {
     z-index: 100;
     transition: var(--transition);
     flex-shrink: 0;
+    box-shadow: 4px 0 24px rgba(245, 119, 153, 0.04);
 }
 
 .sidebar-brand {
@@ -233,9 +241,10 @@ a {
 }
 
 .nav-link.active {
-    background: var(--accent-subtle);
+    background: linear-gradient(135deg, rgba(245, 119, 153, 0.12), rgba(251, 155, 143, 0.08));
     color: var(--accent);
     font-weight: 600;
+    box-shadow: 0 2px 8px rgba(245, 119, 153, 0.08);
 }
 
 .nav-link.active::before {
@@ -244,10 +253,11 @@ a {
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 3px;
-    height: 24px;
-    background: var(--accent);
-    border-radius: 0 4px 4px 0;
+    width: 4px;
+    height: 28px;
+    background: var(--accent-gradient);
+    border-radius: 0 6px 6px 0;
+    box-shadow: 2px 0 8px var(--accent-glow);
 }
 
 .nav-link .nav-icon {
@@ -590,28 +600,34 @@ a {
 }
 
 .page-header {
-    padding: 28px 32px 20px;
+    padding: 32px 36px 24px;
     border-bottom: 1px solid var(--border);
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 .page-header h2 {
-    font-size: 24px;
-    font-weight: 700;
+    font-size: 26px;
+    font-weight: 800;
     letter-spacing: -0.5px;
     display: flex;
     align-items: center;
     gap: 10px;
+    background: linear-gradient(135deg, var(--text-primary), #5a3e3e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .page-header p {
     color: var(--text-secondary);
     font-size: 14px;
-    margin-top: 4px;
+    margin-top: 6px;
 }
 
 .page-body {
-    padding: 28px 32px;
+    padding: 32px 36px;
 }
 
 /* --- Stat Cards --- */
@@ -623,11 +639,12 @@ a {
 }
 
 .stat-card {
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 24px;
-    transition: var(--transition);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     position: relative;
     overflow: hidden;
 }
@@ -638,16 +655,16 @@ a {
     top: 0;
     left: 0;
     right: 0;
-    height: 3px;
+    height: 4px;
     background: var(--accent-gradient);
     opacity: 0;
     transition: var(--transition);
 }
 
 .stat-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px) scale(1.02);
     border-color: var(--accent);
-    box-shadow: 0 0 30px var(--accent-glow);
+    box-shadow: 0 8px 32px var(--accent-glow);
 }
 
 .stat-card:hover::before {
@@ -697,10 +714,13 @@ a {
 
 /* --- Tables --- */
 .table-container {
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
+    box-shadow: var(--shadow);
+    animation: slideUp 0.4s ease;
 }
 
 .table-header {
@@ -825,12 +845,28 @@ tbody tr:last-child td {
 .btn-primary {
     background: var(--accent-gradient);
     color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
 }
 
 .btn-primary:hover {
-    box-shadow: 0 0 20px var(--accent-glow);
-    transform: translateY(-1px);
-    opacity: 0.9;
+    box-shadow: 0 4px 24px var(--accent-glow);
+    transform: translateY(-2px);
 }
 
 .btn-danger {
@@ -1082,7 +1118,7 @@ textarea.form-control {
 @keyframes slideUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(24px);
     }
 
     to {
@@ -1094,12 +1130,46 @@ textarea.form-control {
 @keyframes slideDown {
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(-12px);
     }
 
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-6px);
     }
 }
 
@@ -1251,15 +1321,52 @@ textarea.form-control {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
-    transition: var(--transition);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     display: flex;
     flex-direction: column;
+    animation: cardFadeIn 0.5s ease both;
+}
+
+.product-card:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.product-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.product-card:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.product-card:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.product-card:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.product-card:nth-child(6) {
+    animation-delay: 0.3s;
+}
+
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .product-card:hover {
-    transform: translateY(-6px);
+    transform: translateY(-8px) scale(1.02);
     border-color: var(--accent);
-    box-shadow: 0 12px 40px rgba(245, 119, 153, 0.15);
+    box-shadow: 0 16px 48px rgba(245, 119, 153, 0.18), 0 0 0 1px rgba(245, 119, 153, 0.1);
 }
 
 .product-image {

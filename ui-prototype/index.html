@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nournia Shop — UI Design Prototype</title>
+    <link rel="stylesheet" href="prototype.css">
+</head>
+<body>
+
+<!-- Page Switcher -->
+<nav class="proto-nav">
+    <span class="proto-label">🎨 UI Prototype</span>
+    <button class="active" onclick="showPage('home')">🏠 หน้าร้าน</button>
+    <button onclick="showPage('coupons')">🎟️ คูปอง</button>
+    <button onclick="showPage('sales')">💰 Sales</button>
+    <button onclick="showPage('products')">📦 สินค้า</button>
+    <button onclick="showPage('categories')">🏷️ หมวดหมู่</button>
+    <button onclick="showPage('profile')">👤 โปรไฟล์</button>
+    <button onclick="showPage('login')">🔐 Login</button>
+</nav>
+
+<!-- ==================== PAGE: HOME ==================== -->
+<div class="page active" id="page-home">
+<div class="dashboard-grid">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><div class="brand-icon">🎮</div><div><h1>Nournia Shop</h1><div class="brand-sub">Gaming Gear Store</div></div></div>
+        <nav class="sidebar-nav">
+            <div class="nav-label">Menu</div>
+            <a href="#" class="nav-link active"><span class="nav-icon">🏠</span> หน้าร้าน</a>
+            <a href="#" class="nav-link"><span class="nav-icon">🎟️</span> คูปองส่วนลด</a>
+            <div class="nav-label">Admin</div>
+            <a href="#" class="nav-link"><span class="nav-icon">📦</span> จัดการสินค้า</a>
+            <a href="#" class="nav-link"><span class="nav-icon">🏷️</span> หมวดหมู่</a>
+            <a href="#" class="nav-link"><span class="nav-icon">💰</span> Sales</a>
+            <div class="nav-label">บัญชี</div>
+            <a href="#" class="nav-link"><span class="nav-icon">👤</span> โปรไฟล์</a>
+            <a href="#" class="nav-link"><span class="nav-icon">🛒</span> ตะกร้าสินค้า <span class="cart-sidebar-badge">2</span></a>
+        </nav>
+        <div class="sidebar-user"><div class="user-avatar">N</div><div><div class="user-name">NourniaAdmin</div><div class="user-role">🛠 Admin</div></div><a href="#" class="btn-logout">🚪</a></div>
+        <div class="sidebar-footer">Nournia Shop &copy; 2026</div>
+    </aside>
+    <main class="main-content">
+        <div class="page-header"><h2>🏠 สินค้าเกมมิ่งเกียร์</h2><p>สวัสดี, NourniaAdmin! — เลือกสินค้าที่คุณต้องการ</p></div>
+        <div class="page-body">
+            <div class="store-toolbar">
+                <div class="search-box"><span class="search-icon">🔍</span><input type="text" class="search-input" placeholder="ค้นหาสินค้า..."></div>
+                <div class="category-chips">
+                    <span class="chip active">🏷️ ทั้งหมด</span>
+                    <span class="chip">⌨️ Keyboard</span>
+                    <span class="chip">🖱️ Mouse</span>
+                    <span class="chip">🎧 Headset</span>
+                    <span class="chip">🖥️ Monitor</span>
+                    <span class="chip">🪑 Gaming Chair</span>
+                </div>
+            </div>
+            <div class="product-grid">
+                <div class="product-card"><div class="product-image"><span class="product-category-tag">Keyboard</span>⌨️</div><div class="product-info"><h3 class="product-name">Nournia Pro Pink Keyboard</h3><p class="product-desc">คีย์บอร์ดเมคานิคอล RGB สวิตส์ชมพู สัมผัสนุ่มนวล ไฟ LED</p><div class="product-footer"><div class="product-price">฿2,490</div><button class="btn btn-primary btn-sm">🛒 Add</button></div></div></div>
+                <div class="product-card"><div class="product-image"><span class="product-category-tag">Mouse</span>🖱️</div><div class="product-info"><h3 class="product-name">Nournia Precision Mouse</h3><p class="product-desc">เมาส์เกมมิ่งไร้สาย เซนเซอร์ความแม่นยำสูง DPI 16000</p><div class="product-footer"><div class="product-price">฿1,290</div><button class="btn btn-primary btn-sm">🛒 Add</button></div></div></div>
+                <div class="product-card"><div class="product-image"><span class="product-category-tag">Headset</span>🎧</div><div class="product-info"><h3 class="product-name">Cat Ear Headset Pink</h3><p class="product-desc">หูฟังเกมมิ่งหูแมว เสียงดี ไมค์ชัด มีไฟ RGB</p><div class="product-footer"><div class="product-price">฿1,790</div><button class="btn btn-primary btn-sm">🛒 Add</button></div></div></div>
+                <div class="product-card"><div class="product-image"><span class="product-category-tag">Monitor</span>🖥️</div><div class="product-info"><h3 class="product-name">Gaming Monitor 27" 165Hz</h3><p class="product-desc">จอเกมมิ่ง 27 นิ้ว IPS 165Hz สีสดใส ตอบสนองเร็ว</p><div class="product-footer"><div class="product-price">฿8,900</div><button class="btn btn-primary btn-sm">🛒 Add</button></div></div></div>
+                <div class="product-card"><div class="product-image"><span class="product-category-tag">Chair</span>🪑</div><div class="product-info"><h3 class="product-name">Nournia Gaming Chair</h3><p class="product-desc">เก้าอี้เกมมิ่งสีชมพู รองรับหลัง ปรับระดับได้</p><div class="product-footer"><div class="product-price">฿4,500</div><button class="btn btn-primary btn-sm">🛒 Add</button></div></div></div>
+                <div class="product-card"><div class="product-image"><span class="product-category-tag">Mousepad</span>🖱️</div><div class="product-info"><h3 class="product-name">RGB Mousepad XL</h3><p class="product-desc">แผ่นรองเมาส์ RGB ขนาดใหญ่ กันน้ำ เรืองแสง</p><div class="product-footer"><div class="product-price">฿690</div><button class="btn btn-primary btn-sm">🛒 Add</button></div></div></div>
+            </div>
+        </div>
+    </main>
+</div>
+</div>
+
+<!-- ==================== PAGE: COUPONS ==================== -->
+<div class="page" id="page-coupons">
+<div class="dashboard-grid">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><div class="brand-icon">🎮</div><div><h1>Nournia Shop</h1><div class="brand-sub">Gaming Gear Store</div></div></div>
+        <nav class="sidebar-nav">
+            <div class="nav-label">Menu</div>
+            <a href="#" class="nav-link"><span class="nav-icon">🏠</span> หน้าร้าน</a>
+            <a href="#" class="nav-link active"><span class="nav-icon">🎟️</span> คูปองส่วนลด</a>
+            <div class="nav-label">Admin</div>
+            <a href="#" class="nav-link"><span class="nav-icon">📦</span> จัดการสินค้า</a>
+            <a href="#" class="nav-link"><span class="nav-icon">🏷️</span> หมวดหมู่</a>
+            <a href="#" class="nav-link"><span class="nav-icon">💰</span> Sales</a>
+            <div class="nav-label">บัญชี</div>
+            <a href="#" class="nav-link"><span class="nav-icon">👤</span> โปรไฟล์</a>
+            <a href="#" class="nav-link"><span class="nav-icon">🛒</span> ตะกร้าสินค้า <span class="cart-sidebar-badge">2</span></a>
+        </nav>
+        <div class="sidebar-user"><div class="user-avatar">N</div><div><div class="user-name">NourniaAdmin</div><div class="user-role">🛠 Admin</div></div><a href="#" class="btn-logout">🚪</a></div>
+        <div class="sidebar-footer">Nournia Shop &copy; 2026</div>
+    </aside>
+    <main class="main-content">
+        <div class="page-header"><h2>🎟️ คูปองส่วนลดพิเศษ</h2><p>เลือกรับโค้ดส่วนลดเพื่อนำไปใช้ในการสั่งซื้อสินค้าของคุณ</p></div>
+        <div class="page-body">
+            <div class="coupon-grid">
+                <div class="coupon-block"><div class="coupon-block-header">🎟️</div><div class="coupon-block-body"><div class="coupon-block-amount">฿200<span>OFF</span></div><p class="coupon-block-meta">สั่งซื้อขั้นต่ำ <b>฿1,000</b><br>หมดอายุ: <b>31 Mar 2026</b></p></div><div class="coupon-block-footer"><div class="coupon-block-code-preview">SAVE200</div><button class="btn-block-copy" onclick="this.textContent='✅ คัดลอกแล้ว!'">คัดลอกโค้ดส่วนลด</button></div></div>
+                <div class="coupon-block"><div class="coupon-block-header">🎟️</div><div class="coupon-block-body"><div class="coupon-block-amount">฿100<span>OFF</span></div><p class="coupon-block-meta">สั่งซื้อขั้นต่ำ <b>฿500</b><br>หมดอายุ: <b>15 Apr 2026</b></p></div><div class="coupon-block-footer"><div class="coupon-block-code-preview">SAVE100</div><button class="btn-block-copy" onclick="this.textContent='✅ คัดลอกแล้ว!'">คัดลอกโค้ดส่วนลด</button></div></div>
+                <div class="coupon-block"><div class="coupon-block-header">🎟️</div><div class="coupon-block-body"><div class="coupon-block-amount">฿500<span>OFF</span></div><p class="coupon-block-meta">สั่งซื้อขั้นต่ำ <b>฿2,500</b><br>หมดอายุ: <b>28 Feb 2026</b></p></div><div class="coupon-block-footer"><div class="coupon-block-code-preview">MEGA500</div><button class="btn-block-copy" onclick="this.textContent='✅ คัดลอกแล้ว!'">คัดลอกโค้ดส่วนลด</button></div></div>
+                <div class="coupon-block"><div class="coupon-block-header">🎟️</div><div class="coupon-block-body"><div class="coupon-block-amount">฿50<span>OFF</span></div><p class="coupon-block-meta">สั่งซื้อขั้นต่ำ <b>฿300</b><br>หมดอายุ: <b>30 Jun 2026</b></p></div><div class="coupon-block-footer"><div class="coupon-block-code-preview">WELCOME50</div><button class="btn-block-copy" onclick="this.textContent='✅ คัดลอกแล้ว!'">คัดลอกโค้ดส่วนลด</button></div></div>
+            </div>
+        </div>
+    </main>
+</div>
+</div>
+
+<!-- ==================== PAGE: SALES ==================== -->
+<div class="page" id="page-sales">
+<div class="dashboard-grid">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><div class="brand-icon">🎮</div><div><h1>Nournia Shop</h1><div class="brand-sub">Gaming Gear Store</div></div></div>
+        <nav class="sidebar-nav">
+            <div class="nav-label">Menu</div>
+            <a href="#" class="nav-link"><span class="nav-icon">🏠</span> หน้าร้าน</a>
+            <a href="#" class="nav-link"><span class="nav-icon">🎟️</span> คูปองส่วนลด</a>
+            <div class="nav-label">Admin</div>
+            <a href="#" class="nav-link"><span class="nav-icon">📦</span> จัดการสินค้า</a>
+            <a href="#" class="nav-link"><span class="nav-icon">🏷️</span> หมวดหมู่</a>
+            <a href="#" class="nav-link active"><span class="nav-icon">💰</span> Sales</a>
+            <div class="nav-label">บัญชี</div>
+            <a href="#" class="nav-link"><span class="nav-icon">👤</span> โปรไฟล์</a>
+        </nav>
+        <div class="sidebar-user"><div class="user-avatar">N</div><div><div class="user-name">NourniaAdmin</div><div class="user-role">🛠 Admin</div></div><a href="#" class="btn-logout">🚪</a></div>
+        <div class="sidebar-footer">Nournia Shop &copy; 2026</div>
+    </aside>
+    <main class="main-content">
+        <div class="page-header"><h2>💰 Sales</h2><p>ขายสินค้าและดูประวัติการขาย</p></div>
+        <div class="page-body">
+            <div class="alert alert-success">✅ บันทึกการขาย #15 เรียบร้อยแล้ว</div>
+            <div class="table-container" style="margin-bottom:28px;">
+                <div class="table-header"><h3>🛒 สร้างรายการขายใหม่</h3></div>
+                <div style="padding:24px;">
+                    <div class="sale-item-row">
+                        <div class="form-group" style="margin-bottom:0"><label class="form-label">สินค้า *</label><select class="form-control"><option>Nournia Pro Pink Keyboard — ฿2,490 (เหลือ 15)</option></select></div>
+                        <div class="form-group" style="margin-bottom:0"><label class="form-label">จำนวน *</label><input type="number" class="form-control" value="1"></div>
+                        <div class="form-group" style="margin-bottom:0"><label class="form-label">ราคา/หน่วย</label><input type="text" class="form-control" value="฿2,490.00" readonly></div>
+                        <div class="form-group" style="margin-bottom:0"><label class="form-label">รวม</label><input type="text" class="form-control" value="฿2,490.00" readonly></div>
+                        <button class="btn btn-danger btn-sm" style="margin-top:28px">✕</button>
+                    </div>
+                    <div class="sale-item-row">
+                        <div class="form-group" style="margin-bottom:0"><label class="form-label">สินค้า *</label><select class="form-control"><option>Nournia Precision Mouse — ฿1,290 (เหลือ 20)</option></select></div>
+                        <div class="form-group" style="margin-bottom:0"><label class="form-label">จำนวน *</label><input type="number" class="form-control" value="2"></div>
+                        <div class="form-group" style="margin-bottom:0"><label class="form-label">ราคา/หน่วย</label><input type="text" class="form-control" value="฿1,290.00" readonly></div>
+                        <div class="form-group" style="margin-bottom:0"><label class="form-label">รวม</label><input type="text" class="form-control" value="฿2,580.00" readonly></div>
+                        <button class="btn btn-danger btn-sm" style="margin-top:28px">✕</button>
+                    </div>
+                    <div style="margin-top:20px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); padding-top:20px;">
+                        <button class="btn btn-ghost">+ เพิ่มสินค้า</button>
+                        <div style="text-align:right;">
+                            <div style="font-size:14px; color:var(--text-secondary); margin-bottom:4px;">ยอดรวมทั้งหมด</div>
+                            <div style="font-size:28px; font-weight:800; color:var(--accent); margin-bottom:16px;">฿5,070.00</div>
+                            <button class="btn btn-primary btn-lg">✅ ยืนยันการขาย</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-container">
+                <div class="table-header"><h3>📋 ประวัติการขาย (5)</h3></div>
+                <table><thead><tr><th>รหัส</th><th>วันที่</th><th>ผู้ขาย</th><th>รายการสินค้า</th><th>จำนวน</th><th>ยอดรวม</th></tr></thead>
+                <tbody>
+                    <tr><td><span class="badge badge-info">#15</span></td><td>25/02/2026 03:00</td><td>NourniaAdmin</td><td>Pro Pink Keyboard x1, Precision Mouse x2</td><td>3 ชิ้น</td><td class="price">฿5,070.00</td></tr>
+                    <tr><td><span class="badge badge-info">#14</span></td><td>24/02/2026 18:30</td><td>NourniaAdmin</td><td>Cat Ear Headset x1</td><td>1 ชิ้น</td><td class="price">฿1,790.00</td></tr>
+                    <tr><td><span class="badge badge-info">#13</span></td><td>24/02/2026 14:15</td><td>Admin2</td><td>Gaming Monitor 27" x1</td><td>1 ชิ้น</td><td class="price">฿8,900.00</td></tr>
+                    <tr><td><span class="badge badge-info">#12</span></td><td>23/02/2026 10:45</td><td>NourniaAdmin</td><td>RGB Mousepad XL x3</td><td>3 ชิ้น</td><td class="price">฿2,070.00</td></tr>
+                    <tr><td><span class="badge badge-info">#11</span></td><td>22/02/2026 09:20</td><td>Admin2</td><td>Gaming Chair x1, Keyboard x1</td><td>2 ชิ้น</td><td class="price">฿6,990.00</td></tr>
+                </tbody></table>
+            </div>
+        </div>
+    </main>
+</div>
+</div>
+
+<!-- ==================== PAGE: PRODUCTS ==================== -->
+<div class="page" id="page-products">
+<div class="dashboard-grid">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><div class="brand-icon">🎮</div><div><h1>Nournia Shop</h1><div class="brand-sub">Gaming Gear Store</div></div></div>
+        <nav class="sidebar-nav">
+            <div class="nav-label">Menu</div>
+            <a href="#" class="nav-link"><span class="nav-icon">🏠</span> หน้าร้าน</a>
+            <a href="#" class="nav-link"><span class="nav-icon">🎟️</span> คูปองส่วนลด</a>
+            <div class="nav-label">Admin</div>
+            <a href="#" class="nav-link active"><span class="nav-icon">📦</span> จัดการสินค้า</a>
+            <a href="#" class="nav-link"><span class="nav-icon">🏷️</span> หมวดหมู่</a>
+            <a href="#" class="nav-link"><span class="nav-icon">💰</span> Sales</a>
+            <div class="nav-label">บัญชี</div>
+            <a href="#" class="nav-link"><span class="nav-icon">👤</span> โปรไฟล์</a>
+        </nav>
+        <div class="sidebar-user"><div class="user-avatar">N</div><div><div class="user-name">NourniaAdmin</div><div class="user-role">🛠 Admin</div></div><a href="#" class="btn-logout">🚪</a></div>
+        <div class="sidebar-footer">Nournia Shop &copy; 2026</div>
+    </aside>
+    <main class="main-content">
+        <div class="page-header"><h2>📦 Products</h2><p>จัดการสินค้าในระบบ — เพิ่ม, แก้ไข, ลบ</p></div>
+        <div class="page-body">
+            <div class="table-container">
+                <div class="table-header"><h3>📋 รายการสินค้าทั้งหมด (6)</h3><button class="btn btn-primary">+ เพิ่มสินค้า</button></div>
+                <table><thead><tr><th>ID</th><th>ชื่อสินค้า</th><th>หมวดหมู่</th><th>ราคา</th><th>Stock</th><th>จัดการ</th></tr></thead>
+                <tbody>
+                    <tr><td><span class="badge badge-info">#1</span></td><td style="font-weight:500">Nournia Pro Pink Keyboard</td><td><span class="badge badge-warning">Keyboard</span></td><td class="price">฿2,490.00</td><td><span class="badge badge-success">15</span></td><td><div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm">✏️ แก้ไข</button><button class="btn btn-danger btn-sm">🗑️ ลบ</button></div></td></tr>
+                    <tr><td><span class="badge badge-info">#2</span></td><td style="font-weight:500">Nournia Precision Mouse</td><td><span class="badge badge-warning">Mouse</span></td><td class="price">฿1,290.00</td><td><span class="badge badge-success">20</span></td><td><div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm">✏️ แก้ไข</button><button class="btn btn-danger btn-sm">🗑️ ลบ</button></div></td></tr>
+                    <tr><td><span class="badge badge-info">#3</span></td><td style="font-weight:500">Cat Ear Headset Pink</td><td><span class="badge badge-warning">Headset</span></td><td class="price">฿1,790.00</td><td><span style="color:var(--danger);font-weight:700">3 ⚠️</span></td><td><div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm">✏️ แก้ไข</button><button class="btn btn-danger btn-sm">🗑️ ลบ</button></div></td></tr>
+                    <tr><td><span class="badge badge-info">#4</span></td><td style="font-weight:500">Gaming Monitor 27" 165Hz</td><td><span class="badge badge-warning">Monitor</span></td><td class="price">฿8,900.00</td><td><span class="badge badge-success">8</span></td><td><div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm">✏️ แก้ไข</button><button class="btn btn-danger btn-sm">🗑️ ลบ</button></div></td></tr>
+                    <tr><td><span class="badge badge-info">#5</span></td><td style="font-weight:500">Nournia Gaming Chair</td><td><span class="badge badge-warning">Chair</span></td><td class="price">฿4,500.00</td><td><span class="badge badge-success">5</span></td><td><div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm">✏️ แก้ไข</button><button class="btn btn-danger btn-sm">🗑️ ลบ</button></div></td></tr>
+                    <tr><td><span class="badge badge-info">#6</span></td><td style="font-weight:500">RGB Mousepad XL</td><td><span class="badge badge-warning">Mousepad</span></td><td class="price">฿690.00</td><td><span class="badge badge-success">30</span></td><td><div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm">✏️ แก้ไข</button><button class="btn btn-danger btn-sm">🗑️ ลบ</button></div></td></tr>
+                </tbody></table>
+            </div>
+        </div>
+    </main>
+</div>
+</div>
+
+<!-- ==================== PAGE: CATEGORIES ==================== -->
+<div class="page" id="page-categories">
+<div class="dashboard-grid">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><div class="brand-icon">🎮</div><div><h1>Nournia Shop</h1><div class="brand-sub">Gaming Gear Store</div></div></div>
+        <nav class="sidebar-nav">
+            <div class="nav-label">Menu</div>
+            <a href="#" class="nav-link"><span class="nav-icon">🏠</span> หน้าร้าน</a>
+            <a href="#" class="nav-link"><span class="nav-icon">🎟️</span> คูปองส่วนลด</a>
+            <div class="nav-label">Admin</div>
+            <a href="#" class="nav-link"><span class="nav-icon">📦</span> จัดการสินค้า</a>
+            <a href="#" class="nav-link active"><span class="nav-icon">🏷️</span> หมวดหมู่</a>
+            <a href="#" class="nav-link"><span class="nav-icon">💰</span> Sales</a>
+            <div class="nav-label">บัญชี</div>
+            <a href="#" class="nav-link"><span class="nav-icon">👤</span> โปรไฟล์</a>
+        </nav>
+        <div class="sidebar-user"><div class="user-avatar">N</div><div><div class="user-name">NourniaAdmin</div><div class="user-role">🛠 Admin</div></div><a href="#" class="btn-logout">🚪</a></div>
+        <div class="sidebar-footer">Nournia Shop &copy; 2026</div>
+    </aside>
+    <main class="main-content">
+        <div class="page-header"><h2>🏷️ จัดการหมวดหมู่</h2><p>เพิ่ม แก้ไข ลบ หมวดหมู่สินค้า</p></div>
+        <div class="page-body">
+            <div class="table-container">
+                <div class="table-header"><h3>📋 หมวดหมู่ทั้งหมด (5)</h3><button class="btn btn-primary">+ เพิ่มหมวดหมู่</button></div>
+                <table><thead><tr><th>ID</th><th>Icon</th><th>ชื่อหมวดหมู่</th><th>จำนวนสินค้า</th><th>สร้างเมื่อ</th><th>จัดการ</th></tr></thead>
+                <tbody>
+                    <tr><td>1</td><td style="font-size:24px">⌨️</td><td><strong>Keyboard</strong></td><td><span class="badge badge-success">2 สินค้า</span></td><td>01/01/2026</td><td><div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm">✏️ แก้ไข</button><button class="btn btn-ghost btn-sm" disabled>🔒 ลบไม่ได้</button></div></td></tr>
+                    <tr><td>2</td><td style="font-size:24px">🖱️</td><td><strong>Mouse</strong></td><td><span class="badge badge-success">1 สินค้า</span></td><td>01/01/2026</td><td><div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm">✏️ แก้ไข</button><button class="btn btn-ghost btn-sm" disabled>🔒 ลบไม่ได้</button></div></td></tr>
+                    <tr><td>3</td><td style="font-size:24px">🎧</td><td><strong>Headset</strong></td><td><span class="badge badge-success">1 สินค้า</span></td><td>01/01/2026</td><td><div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm">✏️ แก้ไข</button><button class="btn btn-ghost btn-sm" disabled>🔒 ลบไม่ได้</button></div></td></tr>
+                    <tr><td>4</td><td style="font-size:24px">🖥️</td><td><strong>Monitor</strong></td><td><span class="badge badge-success">1 สินค้า</span></td><td>05/01/2026</td><td><div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm">✏️ แก้ไข</button><button class="btn btn-ghost btn-sm" disabled>🔒 ลบไม่ได้</button></div></td></tr>
+                    <tr><td>5</td><td style="font-size:24px">🪑</td><td><strong>Gaming Chair</strong></td><td><span class="badge badge-info">0 สินค้า</span></td><td>10/01/2026</td><td><div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm">✏️ แก้ไข</button><button class="btn btn-danger btn-sm">🗑️ ลบ</button></div></td></tr>
+                </tbody></table>
+            </div>
+        </div>
+    </main>
+</div>
+</div>
+
+<!-- ==================== PAGE: PROFILE ==================== -->
+<div class="page" id="page-profile">
+<div class="dashboard-grid">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><div class="brand-icon">🎮</div><div><h1>Nournia Shop</h1><div class="brand-sub">Gaming Gear Store</div></div></div>
+        <nav class="sidebar-nav">
+            <div class="nav-label">Menu</div>
+            <a href="#" class="nav-link"><span class="nav-icon">🏠</span> หน้าร้าน</a>
+            <a href="#" class="nav-link"><span class="nav-icon">🎟️</span> คูปองส่วนลด</a>
+            <div class="nav-label">Admin</div>
+            <a href="#" class="nav-link"><span class="nav-icon">📦</span> จัดการสินค้า</a>
+            <a href="#" class="nav-link"><span class="nav-icon">🏷️</span> หมวดหมู่</a>
+            <a href="#" class="nav-link"><span class="nav-icon">💰</span> Sales</a>
+            <div class="nav-label">บัญชี</div>
+            <a href="#" class="nav-link active"><span class="nav-icon">👤</span> โปรไฟล์</a>
+        </nav>
+        <div class="sidebar-user"><div class="user-avatar">N</div><div><div class="user-name">NourniaAdmin</div><div class="user-role">🛠 Admin</div></div><a href="#" class="btn-logout">🚪</a></div>
+        <div class="sidebar-footer">Nournia Shop &copy; 2026</div>
+    </aside>
+    <main class="main-content">
+        <div class="page-header"><h2>👤 โปรไฟล์ของฉัน</h2><p>ดูและแก้ไขข้อมูลส่วนตัว</p></div>
+        <div class="page-body">
+            <div class="profile-grid">
+                <div class="profile-card">
+                    <div class="profile-avatar-section"><div class="profile-avatar-lg">N</div><div class="profile-user-info"><h3>NourniaAdmin</h3><span class="badge badge-info">🛠 Admin</span></div></div>
+                    <div class="profile-meta"><div class="profile-meta-item"><span class="profile-meta-label">สมาชิกตั้งแต่</span><span class="profile-meta-value">01/01/2026</span></div><div class="profile-meta-item"><span class="profile-meta-label">อีเมล</span><span class="profile-meta-value">admin@nournia.com</span></div></div>
+                </div>
+                <div>
+                    <div class="table-container">
+                        <div class="table-header"><h3>📝 แก้ไขข้อมูลส่วนตัว</h3></div>
+                        <div style="padding:24px;">
+                            <div class="form-row"><div class="form-group"><label class="form-label">ชื่อผู้ใช้ *</label><input type="text" class="form-control" value="NourniaAdmin"></div><div class="form-group"><label class="form-label">อีเมล *</label><input type="email" class="form-control" value="admin@nournia.com"></div></div>
+                            <div class="form-row"><div class="form-group"><label class="form-label">เบอร์โทรศัพท์</label><input type="tel" class="form-control" value="081-234-5678" placeholder="08x-xxx-xxxx"></div><div class="form-group"><label class="form-label">บทบาท</label><input type="text" class="form-control" value="Admin" disabled><div class="form-hint">ไม่สามารถเปลี่ยนบทบาทได้</div></div></div>
+                            <div class="form-group"><label class="form-label">ที่อยู่</label><textarea class="form-control" rows="3" placeholder="บ้านเลขที่ ซอย ถนน แขวง เขต จังหวัด รหัสไปรษณีย์">123/45 ถนนตัวอย่าง แขวงทดสอบ เขตทดสอบ กรุงเทพมหานคร 10500</textarea></div>
+                            <div style="display:flex;justify-content:flex-end"><button class="btn btn-primary">💾 บันทึกข้อมูล</button></div>
+                        </div>
+                    </div>
+                    <div class="table-container" style="margin-top:24px;">
+                        <div class="table-header"><h3>🔒 เปลี่ยนรหัสผ่าน</h3></div>
+                        <div style="padding:24px;">
+                            <div class="form-group"><label class="form-label">รหัสผ่านปัจจุบัน *</label><input type="password" class="form-control" placeholder="••••••••"></div>
+                            <div class="form-row"><div class="form-group"><label class="form-label">รหัสผ่านใหม่ *</label><input type="password" class="form-control" placeholder="อย่างน้อย 8 ตัวอักษร"></div><div class="form-group"><label class="form-label">ยืนยันรหัสผ่านใหม่ *</label><input type="password" class="form-control" placeholder="กรอกรหัสผ่านใหม่อีกครั้ง"></div></div>
+                            <div style="display:flex;justify-content:flex-end"><button class="btn btn-primary">🔑 เปลี่ยนรหัสผ่าน</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</div>
+
+<!-- ==================== PAGE: LOGIN ==================== -->
+<div class="page page-login" id="page-login">
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-brand"><div class="brand-logo">🎮</div><h1>Nournia Shop</h1><p>เข้าสู่ระบบเพื่อจัดการร้านค้า</p></div>
+            <div class="form-group"><label class="form-label">อีเมล</label><input type="email" class="form-control" placeholder="example@nournia.com"></div>
+            <div class="form-group"><label class="form-label">รหัสผ่าน</label><input type="password" class="form-control" placeholder="••••••••"></div>
+            <button class="btn btn-primary btn-block" style="margin-top:8px">🔐 เข้าสู่ระบบ</button>
+            <div class="auth-footer">ยังไม่มีบัญชี? <a href="#">สมัครสมาชิก</a></div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelectorAll('.proto-nav button').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
