@@ -50,80 +50,33 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
     <title>Nournia Shop — Gaming Gear Store</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <meta name="description" content="Nournia Shop — ร้านขายอุปกรณ์เกมมิ่งเกียร์ครบวงจร">
+    <?php include 'head_icons.php'; ?>
 </head>
 <body>
 <div class="dashboard-grid">
-    <!-- Sidebar (Column 1: 250px) -->
-    <aside class="sidebar">
-        <div class="sidebar-brand">
-            <div class="brand-icon">🎮</div>
-            <div>
-                <h1>Nournia Shop</h1>
-                <div class="brand-sub">Gaming Gear Store</div>
-            </div>
-        </div>
-        <nav class="sidebar-nav">
-            <div class="nav-label">Menu</div>
-            <a href="index.php" class="nav-link active">
-                <span class="nav-icon">🏠</span> หน้าร้าน
-            </a>
-            <a href="coupons.php" class="nav-link">
-                <span class="nav-icon">🎟️</span> คูปองส่วนลด
-            </a>
-            <?php if ($isAdmin): ?>
-            <div class="nav-label">Admin</div>
-            <a href="products.php" class="nav-link">
-                <span class="nav-icon">📦</span> จัดการสินค้า
-            </a>
-            <a href="categories.php" class="nav-link">
-                <span class="nav-icon">🏷️</span> หมวดหมู่
-            </a>
-            <?php endif; ?>
-            <a href="sales.php" class="nav-link">
-                <span class="nav-icon">💰</span> Sales
-            </a>
-            <div class="nav-label">บัญชี</div>
-            <a href="profile.php" class="nav-link">
-                <span class="nav-icon">👤</span> โปรไฟล์
-            </a>
-            <a href="javascript:void(0)" class="nav-link" onclick="openCartModal()">
-                <span class="nav-icon">🛒</span> ตะกร้าสินค้า <span class="cart-sidebar-badge" id="sidebarCartCount"></span>
-            </a>
-        </nav>
-        <div class="sidebar-user">
-            <div class="user-avatar"><?= strtoupper(substr($user['username'], 0, 1)) ?></div>
-            <div class="user-info">
-                <div class="user-name"><?= htmlspecialchars($user['username']) ?></div>
-                <div class="user-role"><?= $user['role'] === 'admin' ? '🛠 Admin' : '👤 User' ?></div>
-            </div>
-            <a href="logout.php" class="btn-logout" title="ออกจากระบบ">🚪</a>
-        </div>
-        <div class="sidebar-footer">
-            Nournia Shop &copy; <?= date('Y') ?>
-        </div>
-    </aside>
+    <?php $currentPage = 'home'; include 'sidebar.php'; ?>
 
     <!-- Main Content (Column 2: 1fr) -->
     <main class="main-content">
         <div class="page-header">
-            <h2>🏠 สินค้าเกมมิ่งเกียร์</h2>
+            <h2>สินค้าเกมมิ่งเกียร์</h2>
             <p>สวัสดี, <?= htmlspecialchars($user['username']) ?>! — เลือกสินค้าที่คุณต้องการ</p>
         </div>
 
         <div class="page-body">
             <?php if (isset($_GET['error']) && $_GET['error'] === 'unauthorized'): ?>
-                <div class="alert alert-danger">⛔ คุณไม่มีสิทธิ์เข้าถึงหน้าดังกล่าว</div>
+                <div class="alert alert-danger">คุณไม่มีสิทธิ์เข้าถึงหน้าดังกล่าว</div>
             <?php endif; ?>
 
             <?php if (isset($_GET['cart']) && $_GET['cart'] === 'added'): ?>
-                <div class="alert alert-success">🛒 เพิ่มสินค้าลงตะกร้าแล้ว!</div>
+                <div class="alert alert-success">เพิ่มสินค้าลงตะกร้าแล้ว!</div>
             <?php endif; ?>
 
             <!-- Search + Filter Bar -->
             <div class="store-toolbar">
                 <form method="GET" class="store-search-form" id="storeFilterForm">
                     <div class="search-box">
-                        <span class="search-icon">🔍</span>
+                        <span class="search-icon"><i data-lucide="search"></i></span>
                         <input type="text" name="search" class="search-input"
                                placeholder="ค้นหาสินค้า..."
                                value="<?= htmlspecialchars($searchQuery) ?>"
@@ -180,7 +133,7 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
                                         <button class="btn btn-primary btn-sm btn-add-cart"
                                                 onclick="addToCart(<?= $p['id'] ?>, '<?= htmlspecialchars($p['name'], ENT_QUOTES) ?>', <?= $p['price'] ?>, '<?= htmlspecialchars($p['image_url'] ?? '', ENT_QUOTES) ?>')"
                                                 id="cartBtn-<?= $p['id'] ?>">
-                                            🛒 Add
+                                            <i data-lucide="shopping-cart" style="width:14px;height:14px"></i> Add
                                         </button>
                                     <?php else: ?>
                                         <button class="btn btn-ghost btn-sm" disabled>สินค้าหมด</button>
@@ -211,29 +164,15 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
     
     // --- Lightbox Functions ---
     function openLightbox(src, name) {
-        console.log('Opening lightbox for:', name, src);
-        if (!src || src === '') {
-            console.warn('No image source provided');
-            return;
-        }
-        
+        if (!src || src === '') return;
         const overlay = document.getElementById('productLightbox');
         const img = document.getElementById('lightboxImg');
         const caption = document.getElementById('lightboxCaption');
-        
-        if (!overlay || !img) {
-            console.error('Lightbox elements not found');
-            return;
-        }
-
+        if (!overlay || !img) return;
         img.src = src;
         caption.textContent = name;
         overlay.style.display = 'flex';
-        
-        setTimeout(() => {
-            overlay.classList.add('active');
-        }, 50);
-        
+        setTimeout(() => overlay.classList.add('active'), 50);
         document.body.style.overflow = 'hidden'; 
     }
 
@@ -241,7 +180,6 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
         const overlay = document.getElementById('productLightbox');
         if (!overlay) return;
         overlay.classList.remove('active');
-        
         setTimeout(() => {
             overlay.style.display = 'none';
             document.body.style.overflow = '';
@@ -256,6 +194,9 @@ $totalSales = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) FROM sales")->f
             document.getElementById('storeFilterForm').submit();
         }, 600);
     }
+
+    // Initialize Lucide Icons
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 </script>
 <?php include 'footer.php'; ?>
 </body>
